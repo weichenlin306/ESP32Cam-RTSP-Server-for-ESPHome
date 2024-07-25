@@ -11,9 +11,9 @@
 - Encapulate Micro-RTSP as a class for use in ESPHome
 
 ## Usage
-- Place esp32cam-rtsp-server-single-client.h, as well as micro_rtsp folder in the same folder as your ESPHome project (.yaml) file
+- Place esp32cam-rtsp-server-single-client.h, as well as micro_rtsp folder, in the same folder as your ESPHome project (.yaml) file
 - Configure your YAML project file
-    - Add psram component to use pseudo SRAM (PSRAM) to avoid "core panic'd" and infinite reboot
+    - Add "psram" component to use pseudo SRAM (PSRAM) to avoid "core panic'd" and infinite reboot
     - Put a custom component named "custom_component" and make an Esp32camRtsp() instance using lambda function
     - Use class instancization of Esp32camRtsp() without any parameter for default rtsp port 554 and with a number for a specific rtsp port
 
