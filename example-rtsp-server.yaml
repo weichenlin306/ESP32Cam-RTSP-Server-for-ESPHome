@@ -3,9 +3,7 @@ esphome:
   friendly_name: my-esp32cam-rtsp-server
   includes:
     - micro_rtsp
-    - esp32cam-rtsp-server-single-client.h
-  libraries:
-    - WiFi
+    - esp32cam-rtsp-server.h
 
 esp32:
   board: esp32dev
@@ -51,6 +49,7 @@ custom_component:
   - lambda: |-
       auto Esp32CamRtspServer = new Esp32camRtsp();         // Use default rtsp port 554
       // auto Esp32CamRtspServer = new Esp32camRtsp(8554);  // Use rtsp port 8554
+      // auto Esp32CamRtspServer = new Esp32camRtsp(554,4); // Use default rtsp port 554 and max. client count 4
       return {Esp32CamRtspServer};    
     components: 
       - id: my_esp32cam_rtsp_server
