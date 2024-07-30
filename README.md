@@ -25,6 +25,7 @@
     - Esp32camRtsp(8554,4) - custom rtsp port 8554, max. client count 4
 
 - Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP/mjpeg/1" to test this RTSP server function
+- If early disconnection happens, try changing handleRequests(0) to handleRequest(50)
 
 ## References
 
