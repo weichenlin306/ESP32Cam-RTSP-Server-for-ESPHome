@@ -1,4 +1,4 @@
-# 【分享】ESP32CAM RTSP Server三部曲- Part 2 Micro-RTSP為ESPHome改裝
+# ESP32CAM RTSP Server三部曲- Part 2 Micro-RTSP為ESPHome改裝
 
 ## 置頂
 

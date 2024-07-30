@@ -1,4 +1,4 @@
-# 【分享】ESP32CAM RTSP Server三部曲- Part 1 淺談ESPHome與Home Assistant
+# ESP32CAM RTSP Server三部曲- Part 1 淺談ESPHome與Home Assistant
 
 ## 楔子
 
