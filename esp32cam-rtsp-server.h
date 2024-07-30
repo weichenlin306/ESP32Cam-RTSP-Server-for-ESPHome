@@ -62,6 +62,7 @@ public:
         // If we have an active client connection, just service that until gone
         clientList[i].session->handleRequests(0);   // We don't use a timeout here,
                                                     // instead we send only if we have new enough frames
+                                                    // Try setting timeout value to 50 if early disconnection
         uint32_t now = millis();
         if (now > clientList[i].lastFrameTime + MSEC_PER_FRAME || /*handle clock rollover*/ now < clientList[i].lastFrameTime) {
           clientList[i].session->broadcastCurrentFrame(now);
