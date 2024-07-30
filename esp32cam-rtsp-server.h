@@ -60,8 +60,8 @@ public:
     for (int i = 0; i < clientList.size(); i++) {   // Walk through all active/possible clients
       if (clientList[i].session) {
         // If we have an active client connection, just service that until gone
-        clientList[i].session->handleRequests(MSEC_PER_FRAME); 
-
+        clientList[i].session->handleRequests(0);   // We don't use a timeout here,
+                                                    // instead we send only if we have new enough frames
         uint32_t now = millis();
         if (now > clientList[i].lastFrameTime + MSEC_PER_FRAME || /*handle clock rollover*/ now < clientList[i].lastFrameTime) {
           clientList[i].session->broadcastCurrentFrame(now);
