@@ -27,16 +27,16 @@ ota:
     password: "eb8b04c98aaaa66521090ac073acc83c"
 
 wifi:
-  networks:
+  networks:                   # Multiple WiFi AP candidates
   - ssid: !secret wifi_ssid_2f
     password: !secret wifi_password
   - ssid: !secret wifi_ssid_1f
     password: !secret wifi_password
   manual_ip:
-    static_ip: 192.168.1.77
-    gateway: 192.168.1.254
+    static_ip: 192.168.1.77   # Replace with your desired static IP
+    gateway: 192.168.1.254    # Replace with your effective gateway
     subnet: 255.255.255.0
-    dns1: 192.168.1.254
+    dns1: 192.168.1.254       # Replace with your preferred DNS
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
