@@ -85,8 +85,7 @@
 即可進入 ESPHome 的 Linux 環境 (圖B)，可用 "**find -name xxxx**" 尋找 xxxx 檔案存放的位置。在 **/data/build/test/src** 目錄下，找到了主檔 **main.cpp** (圖C)。由 YAML 翻譯成 C++ 的主檔名都固定為 main.cpp。  
 列出 main.cpp 內容 (圖D)，可見其中每個元件 (包括匯流排驅動程式) 都自成一個類別 (class, HA 中稱為**platform**)，同一類別 (如sensor) 下各裝置 (class->instance) 再以 id_1, id_2,...區分，並各以 App.register_component() 讓 HA 使用。在類別定義裡，須有 **setup()** 與 **loop()** 兩個 public 常式 (override) 供 App 主程式呼叫。有興趣的話，可以注意一下 lambda function 是如何被翻譯成 C++ 程式的一部分的。  
 原本由 ESPHome 提供的元件我們可以當黑盒子使用，不用知道它是如何產生的；但如果要自己從零開始打造一個新元件，就得知道它必須具備怎樣的架構。  
-簡單地說，它必須宣告成一個類別 (class)，再在 YAML 檔裡透過 lambda function 將該類別實物化，變成 HA 實際可用的「實例」(instance)，並賦予它在 HA 中的對應 ID。
-
+簡單地說，它必須宣告成一個類別 (class)，再在 YAML 檔裡透過 lambda function 將該類別實物化，變成 HA 實際可用的「實例」(instance)，並賦予它在 HA 中的對應 ID。  
 <img src="https://github.com/user-attachments/assets/82b85f49-f153-4f83-8b5b-a05ea935eb66" width="550">
 <img src="https://github.com/user-attachments/assets/89fca6f2-ed16-404d-81e4-ef732b86a61a" width="450"><br>
 <img src="https://github.com/user-attachments/assets/926c1e9a-3726-4b1f-8041-68a790182294" width="400">
