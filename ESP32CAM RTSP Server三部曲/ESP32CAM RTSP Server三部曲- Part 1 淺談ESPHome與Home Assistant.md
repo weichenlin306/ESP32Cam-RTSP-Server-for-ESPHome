@@ -87,6 +87,17 @@
 原本由 ESPHome 提供的元件我們可以當黑盒子使用，不用知道它是如何產生的；但如果要自己從零開始打造一個新元件，就得知道它必須具備怎樣的架構。  
 簡單地說，它必須宣告成一個類別 (class)，再在 YAML 檔裡透過 lambda function 將該類別實物化，變成 HA 實際可用的「實例」(instance)，並賦予它在 HA 中的對應 ID。
 
+<img src="https://github.com/user-attachments/assets/82b85f49-f153-4f83-8b5b-a05ea935eb66" width="550">
+<img src="https://github.com/user-attachments/assets/89fca6f2-ed16-404d-81e4-ef732b86a61a" width="450"><br>
+<img src="https://github.com/user-attachments/assets/926c1e9a-3726-4b1f-8041-68a790182294" width="400">
+<img src="https://github.com/user-attachments/assets/c032410c-70a6-4497-8760-58e7f97d50db" width="600"><br>
+<img src="https://github.com/user-attachments/assets/adcda71d-076e-45f0-b51b-15c9240c15de" width="450">
+<img src="https://github.com/user-attachments/assets/7b369de2-044e-48f6-aaa8-bcd1c5f0c9a9" width="550"><br>
+<img src="https://github.com/user-attachments/assets/a5db09ad-e57e-4b4d-bd2e-dd540055f390" width="500">
+<img src="https://github.com/user-attachments/assets/4d5f5907-643a-444f-8026-427fb15b7840" width="500"><br>
+<img src="https://github.com/user-attachments/assets/1f2c03f3-efd2-4460-8ad5-fc7013db6fc4" width="500">
+<img src="https://github.com/user-attachments/assets/2a23d434-dea9-486b-a411-4ed0ae702000" width="500"><br>
+
 ## 目標
 
 將 Micro-RTSP 改造成 ESPHome 適用的元件！  
