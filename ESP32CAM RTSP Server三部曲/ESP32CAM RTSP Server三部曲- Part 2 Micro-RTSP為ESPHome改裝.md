@@ -38,6 +38,7 @@ YAML檔內也要加入psram元件，否則可能造成執行期間不斷重開�
 ## 演示
 
 配合 Arduino IDE 的「序列埠監控窗」，以 VLC 播放實測 RTSP 動作。影片中的紫色小方塊是 Part 1 裡提及的 AHT20+BMP280。ESP32-CAM 上所接為160度廣角鏡，可以在室內涵蓋較大的偵測區域。
+https://github.com/user-attachments/assets/e8f9aeda-b48b-4e6e-81ba-7604f222052e
 
 ## 未竟
 
