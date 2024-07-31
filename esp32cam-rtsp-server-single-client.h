@@ -40,7 +40,7 @@ public:
     rtspServer.begin(rtsp_port);
   }
 
-  CStreamer *streamer{nullptr};
+  CStreamer  *streamer{nullptr};
   CRtspSession *session{nullptr};
   WiFiClient client;
 
