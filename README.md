@@ -12,7 +12,7 @@
 - WebServer did not pass compiling on ESPHome and hence the HTTP protocol is totally removed
 - Include only those header files being used for camera image capture and pure RTSP connection
 - Encapulate Micro-RTSP as a class for use in ESPHome
-- Now support multiple client connections (2024/7/30)
+- Now support multiple simultaneous client connections (2024/7/30)
 
 ## Usage
 
