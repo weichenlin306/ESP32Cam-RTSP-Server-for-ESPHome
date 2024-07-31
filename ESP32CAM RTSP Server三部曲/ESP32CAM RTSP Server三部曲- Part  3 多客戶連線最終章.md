@@ -16,6 +16,8 @@
 
 找了半天，終於發現所改的程式完全沒被引用入編譯環境中，而且又出現了其他不少的錯誤(如 EPSmDNS，我根本沒動到這個元件)，編譯器到底是找到哪個版本的WiFi來編譯的？鐵定不是我加工過的這個！又再研究了 PlatformIO 有關 lib_deps 的設定，總算找到了一點蛛絲馬跡。原來 platform-espressif32 還在持續開發中，目前最新版本 (截至2024/7/30) 為 6.7.0，但是在ESPHome的編譯使用的是版本5.4.0 ( espressif32@5.4.0，如圖)，配合它的Framework arduino是v2.0.6，須至樂鑫網站 ([link here](https://components.espressif.com/components/espressif/arduino-esp32/versions/2.0.6?language=en)) 下載這個版本來修改才行。
 
+<img src="https://github.com/user-attachments/assets/6a080e76-1d2e-48fd-984b-577b4c1a6832" width="900">
+
 ## 轉念
 
 費了好大工夫，總算修改了 WiFiServer.h 與 WiFiServer.cpp ，加了 int getSockFd() 也如願可以呼叫得到了。然後呢？總覺得書上的多客戶端程式寫作方式與 Arduino 的寫作風格格格不入，有可能不用 select() 方法就能達到多客戶端的連線嗎？再檢視一下相關 .h/.cpp 檔，果然在 WiFiClient.cpp 裡看到了 select() 函式的使用，原來它被巧妙地包裝在 WiFiServer::accept() 裡！既是如此，是否可以只使用 Arduino 的寫作方法，就可以達到多客戶端連線的要求呢？
@@ -41,6 +43,8 @@
     return {Esp32CamRtspServer};
 
 連線網址設為"rtsp://<ESP32CAM_RTSP_SERVER_IP>:8554/jmpeg/1"，同時開啟四個VLC視窗(影片)，可正常運作。成功！
+
+https://github.com/user-attachments/assets/839536a1-5a1d-4920-89dc-d03e6936c3bc
 
 ## 後記
 
