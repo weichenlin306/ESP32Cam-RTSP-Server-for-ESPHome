@@ -12,7 +12,7 @@ private:
 public:
   // Constructor
   Esp32camRtsp(uint16_t port=554)
-    : rtsp_port(port), streamer(nullptr), session(nullptr) {};
+    : rtsp_port(port) {};
   // Destructor
   ~Esp32camRtsp() {};
 
@@ -40,8 +40,8 @@ public:
     rtspServer.begin(rtsp_port);
   }
 
-  CStreamer *streamer;
-  CRtspSession *session;
+  CStreamer *streamer{nullptr};
+  CRtspSession *session{nullptr};
   WiFiClient client;
 
   void loop() override
@@ -62,7 +62,7 @@ public:
         // check if we are overrunning our max frame rate
         now = millis();
         if (now > lastFrameTime + MSEC_PER_FRAME)
-          printf("warning exceeding max frame rate of %d ms\n", now - lastFrameTime);
+          printf("WARNING: The real time-per-frame, %d ms, exceeds that of the current frame rate.\n", now - lastFrameTime);
       }
 
       if(session->m_stopped) {
