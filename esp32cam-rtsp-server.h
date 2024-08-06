@@ -17,11 +17,18 @@ class Esp32camRtsp : public Component {
 private:
   uint16_t rtsp_port;
   uint8_t  max_client_count;
+  // Camera sensor settings
+  int8_t _vflip;
+  int8_t _hmirror;
+  int8_t _brightness;
+  int8_t _saturation;
 
 public:
   // Constructor
-  Esp32camRtsp(uint16_t port=554, uint8_t max_clients=1)
-    : rtsp_port(port), max_client_count(max_clients) {};
+  Esp32camRtsp(uint16_t port=554, uint8_t max_clients=1,
+    int8_t vflip=0, int8_t hmirror=0, int8_t brightness=0, int8_t saturation=0)
+    : rtsp_port(port), max_client_count(max_clients),
+      _vflip(vflip), _hmirror(hmirror), _brightness(brightness), _saturation(saturation) {};
   // Destructor
   ~Esp32camRtsp() {};
 
@@ -41,10 +48,10 @@ public:
     cam.init(config);
 
     sensor_t *s = esp_camera_sensor_get();
-    // s->set_vflip(s, 1);        // Vertical flip
-    // s->set_hmirror(s, 1);      // Horizontal mirror
-    // s->set_brightness(s, 1);   // -2 ~ 2
-    // s->set_saturation(s, -2);  // -2 ~ 2
+    s->set_vflip(s, _vflip);              // Vertical flip: 0|1
+    s->set_hmirror(s, _hmirror);          // Horizontal mirror: 0|1
+    s->set_brightness(s, _brightness);    // -2 ~ 2
+    s->set_saturation(s, _saturation);    // -2 ~ 2
 
     rtspServer = WiFiServer(rtsp_port, max_client_count);
     rtspServer.begin(rtsp_port);
