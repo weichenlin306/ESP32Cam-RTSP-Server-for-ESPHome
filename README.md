@@ -15,8 +15,8 @@
 - Now support multiple simultaneous client connections (2024/7/30)
 - Add camera sensor settings as input arguments on class construction
 - If the connector of a flexible printed circuit (FPC) of OV2640 is overheated, try to change values in esp32cam-rtsp-server.h
-  1. <font color="skyblue">#define MSEC_PER_FRAME 200</font>
-  2. <font color="skyblue">config.xclk_freq_hz = 10000000;</font>
+  1. #define MSEC_PER_FRAME 200
+  2. config.xclk_freq_hz = 10000000;
 
 ## Usage
 
@@ -40,12 +40,12 @@
 
 
   - Esp32camRtsp() usage examples:
-    - <font color="yellow">Esp32camRtsp()</font> - default rtsp port 554, max. client count 1
-    - <font color="yellow">Esp32camRtsp(8554)</font> - custom rtsp port 8554, max. client count 1
-    - <font color="yellow">Esp32camRtsp(8554,4)</font> - custom rtsp port 8554, max. client count 4
-    - <font color="yellow">Esp32camRtsp(554,1,0,0,1,-1)</font> - default rtsp port 554, max. client count 1, brightness = 1, saturation = -1
+    - Esp32camRtsp() - default rtsp port 554, max. client count 1
+    - Esp32camRtsp(8554) - custom rtsp port 8554, max. client count 1
+    - Esp32camRtsp(8554,4) - custom rtsp port 8554, max. client count 4
+    - Esp32camRtsp(554,1,0,0,1,-1) - default rtsp port 554, max. client count 1, brightness = 1, saturation = -1
 
-- Use VLC to open stream <font color="lime">rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1</font> to test RTSP server function
+- Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
 
 ## References
 
