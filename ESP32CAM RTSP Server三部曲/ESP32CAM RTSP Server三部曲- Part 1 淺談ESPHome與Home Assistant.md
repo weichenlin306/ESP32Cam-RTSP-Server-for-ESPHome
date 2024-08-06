@@ -10,7 +10,7 @@
 如前所述，要利用偵測到的影像來控制裝置，使用 HA 是再適合不過了。關於 HA，[在此](https://www.home-assistant.io/)有詳細介紹，不再贅述，僅就初學者較不易弄清的觀念略為介紹。  
 關於HA的硬體，可以裝在他們主推的樹莓派 (Raspberry Pi) (最容易)，或裝到PC實體機或各種虛擬機上 (包括 Proxmox, Windows, macOS, Linux 等) (專家級)。  
 關於 HA 的軟體，可以安裝 HAOS (較陽春的 Linux ) 或裝在虛擬機上成為一個客體作業系統(能達到功能各有不同)。HA有一些功能元件是內含(built-in)的；HA 未內含但可以是「選配」功能的，則由各熱心的高手群製作成一個 Docker 容器 (container)，統一由內含的Supervisor管理。  
-這裡要介紹的 ESPHome 即是一個 Docker container，也是ESP32系列開發板可以在HA有一席之地的開發環境。它的編譯環境主要是由 PlatformIO 衍生而來。所使用的編譯架構 (Framework) 有二：一為我們熟悉的 Arduino，另一是 ESP32 母公司樂鑫公司所提供的原生程式庫 ESP-IDF，可以讓 ESP32 能力發揮得更淋漓盡致。
+這裡要介紹的 ESPHome 即是一個 Docker container，也是 ESP32 系列開發板可以在HA有一席之地的開發環境。它的編譯環境主要是由 PlatformIO 衍生而來。所使用的編譯架構 (Framework) 有二：一為我們熟悉的 Arduino，另一是 ESP32 母公司樂鑫公司所提供的原生程式庫 ESP-IDF，可以讓 ESP32 能力發揮得更淋漓盡致。
 
 ## 選擇
 
