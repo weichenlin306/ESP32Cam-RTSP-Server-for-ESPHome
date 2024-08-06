@@ -84,6 +84,8 @@ Frigate 為近年很熱門的智慧監視系統，截至目前 (2024/8/4) 的最
         retain:
           default: 3
 
+![1722908204750](https://github.com/user-attachments/assets/9553df44-9e3a-4a6a-90dc-f20234a58d43)  ![snapshot](https://github.com/user-attachments/assets/a2538def-922a-40d1-a92b-a7c829e6f2a4)
+
 
 
 在 HA 的主面板裡，可以把 ESP32-CAM 另加的溫溼度壓力元件的輸出數值顯示於此，同時把由串流到 Frigate 再分流出來的影像顯示在此面板中，顯示速度為 0.1 fps。Frigate 還可做許多方面的監測 (事件觸發) 與記錄 (recording / snapshot)，可依需求調整設定。
