@@ -84,7 +84,7 @@ Frigate 為近年很熱門的智慧監視系統，截至目前 (2024/8/4) 的最
         retain:
           default: 3
 
-![1722908204750](https://github.com/user-attachments/assets/9553df44-9e3a-4a6a-90dc-f20234a58d43)  ![snapshot](https://github.com/user-attachments/assets/a2538def-922a-40d1-a92b-a7c829e6f2a4)
+![1722908204750](https://github.com/user-attachments/assets/9553df44-9e3a-4a6a-90dc-f20234a58d43) ![snapshot](https://github.com/user-attachments/assets/a2538def-922a-40d1-a92b-a7c829e6f2a4)
 
 
 
