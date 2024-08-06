@@ -55,32 +55,44 @@
       sda: GPIO14
       scl: GPIO15
       scan: True
+
     sensor:
       - platform: aht10
         variant: AHT20
         address: 0x38
         temperature:
           filters:
-          - lambda: return x - 8.10;
+          - offset: -9.53          
+          - median:
+              window_size: 7
+              send_every: 4
+              send_first_at: 1
           name: "Temperature"
         humidity:
           filters:
-          - lambda: return x + 14.23;
+          - offset: 24.98
+          - median:
+              window_size: 7
+              send_every: 4
+              send_first_at: 1
           name: "Humidity"
         update_interval: 60s
+
       - platform: bmp280
         address: 0x77
         pressure:
+          filters:
+          - offset: -2
           name: "Pressure"
         update_interval: 60s
 
-該元件使用i2c介面，亦須另外加入 i2c 元件。裡面使用 lambda function 以校正實際數值。編譯上傳 (USB 或 OTA) 後，它就可以運作了，也可再加入HA面板顯示。然而，如果沒有現成元件可以使用，該怎麼做呢？ESPHome [在此](https://www.esphome.io/components/sensor/custom.html)也提供了做法。我們較好奇的是：所有使用到的元件是如何「兜」在一個程式裡的呢？ESPHome是如何把 YAML 翻譯成 C++ 程式？又如何讓各元件間可協同運作的？
+該元件使用 i2c 介面，亦須另外加入 i2c 元件；各感應器則選用 filters 以校正實際數值。編譯上傳 (USB 或 OTA) 後，它就可以運作了，也可再加入 HA 面板顯示。然而，如果沒有現成元件可以使用，該怎麼做呢？ESPHome [在此](https://www.esphome.io/components/sensor/custom.html) 也提供了做法。我們較好奇的是：所有使用到的元件是如何「兜」在一個程式裡的呢？ESPHome是如何把 YAML 翻譯成 C++ 程式？又如何讓各元件間可協同運作的？
 
 ## 直搗黃龍
 
 既知我安裝的 ESPHome 是個 Docker container 版本，就可在它的終端機模式 (Terminal) 下使用相關命令一探究竟。  
 終端機模式可藉安裝 Add-On "Advanced SSH & Web Terminal" (圖A) 獲得，或使用 PuTTY 連入。此處以前者演示。  
-先下命令 "docker ps"，會列出已安裝的容器，找出esphome的容器識別碼 (不是固定不變的)，是 "b58141e0601a"。  
+先下命令 "docker ps"，會列出已安裝的容器，找出 esphome 的容器識別碼 (不是固定不變的)，是 "b58141e0601a"。  
 再下命令：**docker exec -it b58141e0601a bash**  
 即可進入 ESPHome 的 Linux 環境 (圖B)，可用 "**find -name xxxx**" 尋找 xxxx 檔案存放的位置。在 **/data/build/test/src** 目錄下，找到了主檔 **main.cpp** (圖C)。由 YAML 翻譯成 C++ 的主檔名都固定為 main.cpp。  
 列出 main.cpp 內容 (圖D)，可見其中每個元件 (包括匯流排驅動程式) 都自成一個類別 (class, HA 中稱為**platform**)，同一類別 (如sensor) 下各裝置 (class->instance) 再以 id_1, id_2,...區分，並各以 App.register_component() 讓 HA 使用。在類別定義裡，須有 **setup()** 與 **loop()** 兩個 public 常式 (override) 供 App 主程式呼叫。有興趣的話，可以注意一下 lambda function 是如何被翻譯成 C++ 程式的一部分的。  
@@ -100,4 +112,4 @@
 ## 目標
 
 將 Micro-RTSP 改造成 ESPHome 適用的元件！  
-當然，如能把它變成 ESPHome 的一個元件，上傳供大家取用，是再好不過的了，各位愛好者加油吧！您也可以是ESPHome全球大家族裡的一個 contributor!
+當然，如能把它變成 ESPHome 的一個元件，上傳供大家取用，是再好不過的了，各位愛好者加油吧！您也可以是 ESPHome 全球大家族裡的一個 contributor!
