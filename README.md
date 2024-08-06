@@ -15,8 +15,8 @@
 - Now support multiple simultaneous client connections (2024/7/30)
 - Add camera sensor settings as input arguments on class construction
 - If the connector of a flexible printed circuit (FPC) of OV2640 is overheated, try to change values in esp32cam-rtsp-server.h
-  1. #define MSEC_PER_FRAME 200
-  2. config.xclk_freq_hz = 10000000;
+  - #define MSEC_PER_FRAME 200
+  - config.xclk_freq_hz = 10000000;
 
 ## Usage
 
