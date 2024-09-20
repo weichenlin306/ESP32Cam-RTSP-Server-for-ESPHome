@@ -29,21 +29,23 @@
 
         auto Esp32CamRtspServer = new Esp32camRtsp(
             [RTSP_PORT], [MAX_CLIENT_COUNT],
-            [VERTICAL_FLIP], [HORRIZONTAL_MIRROR], [BRIGHTNESS], [SATURATION]
+            [VERTICAL_FLIP], [HORRIZONTAL_MIRROR], [BRIGHTNESS], [CONTRAST], [SATURATION]
         )
 
         Value Ranges:
           VERTICAL_FLIP: 0 | 1
           HORRIZONTAL_MIRROR: 0 | 1
           BRIGHTNESS: -2 ~ 2 (integer)
+          CONTRAST:   -2 ~ 2 (integer)
           SATURATION: -2 ~ 2 (integer)
 
+    Please refer to https://randomnerdtutorials.com/esp32-cam-ov2640-camera-settings/ for more settings.
 
   - Esp32camRtsp() usage examples:
     - Esp32camRtsp() - default rtsp port 554, max. client count 1
     - Esp32camRtsp(8554) - custom rtsp port 8554, max. client count 1
     - Esp32camRtsp(8554,4) - custom rtsp port 8554, max. client count 4
-    - Esp32camRtsp(554,1,0,0,1,-1) - default rtsp port 554, max. client count 1, brightness = 1, saturation = -1
+    - Esp32camRtsp(554,1,0,0,1,0,-1) - default rtsp port 554, max. client count 1, brightness = 1, contrast = 0, saturation = -1
 
 - Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
 

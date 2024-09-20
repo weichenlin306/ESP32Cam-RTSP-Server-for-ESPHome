@@ -21,14 +21,15 @@ private:
   int8_t _vflip;
   int8_t _hmirror;
   int8_t _brightness;
+  int8_t _contrast;
   int8_t _saturation;
 
 public:
   // Constructor
   Esp32camRtsp(uint16_t port=554, uint8_t max_clients=1,
-    int8_t vflip=0, int8_t hmirror=0, int8_t brightness=0, int8_t saturation=0)
+    int8_t vflip=0, int8_t hmirror=0, int8_t brightness=0, int8_t contrast=0, int8_t saturation=0)
     : rtsp_port(port), max_client_count(max_clients),
-      _vflip(vflip), _hmirror(hmirror), _brightness(brightness), _saturation(saturation) {};
+      _vflip(vflip), _hmirror(hmirror), _brightness(brightness), _contrast(contrast), _saturation(saturation) {};
   // Destructor
   ~Esp32camRtsp() {};
 
@@ -43,7 +44,7 @@ public:
     // Supported boards: esp32cam_config, esp32cam_aithinker_config, esp32cam_ttgo_t_config
     camera_config_t config = esp32cam_aithinker_config;
     // Possible frame sizes: UXGA(1600x1200),SXGA(1280x1024),XGA(1024x768),SVGA(800x600),VGA(640x480),CIF(400x296),QVGA(320x240),HQVGA(240x176),QQVGA(160x120)
-    config.frame_size = FRAMESIZE_SVGA;
+    config.frame_size = FRAMESIZE_XGA;
     // config.xclk_freq_hz = 10000000;  // default: 20000000
     cam.init(config);
 
@@ -51,6 +52,7 @@ public:
     s->set_vflip(s, _vflip);              // Vertical flip: 0|1
     s->set_hmirror(s, _hmirror);          // Horizontal mirror: 0|1
     s->set_brightness(s, _brightness);    // -2 ~ 2
+    s->set_contrast(s, _contrast);        // -2 ~ 2
     s->set_saturation(s, _saturation);    // -2 ~ 2
 
     rtspServer = WiFiServer(rtsp_port, max_client_count);
