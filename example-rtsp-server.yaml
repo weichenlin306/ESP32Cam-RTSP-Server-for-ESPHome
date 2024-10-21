@@ -47,10 +47,11 @@ captive_portal:
 
 custom_component:
   - lambda: |-
+      // auto fs = FRAMESIZE_SVGA;                          // Default frame size. Uncomment and assign a desired frame size.
       auto Esp32CamRtspServer = new Esp32camRtsp();         // Use default rtsp port 554
       // auto Esp32CamRtspServer = new Esp32camRtsp(8554);  // Use rtsp port 8554
       // auto Esp32CamRtspServer = new Esp32camRtsp(554,4); // Use default rtsp port 554 and max. client count 4
-      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,0,0,2,-1);  // Use rtsp port 8554, max. client count 1, brightness=2, and saturation=-1
+      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,-1);  // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, and saturation=-1
       return {Esp32CamRtspServer};    
     components: 
       - id: my_esp32cam_rtsp_server

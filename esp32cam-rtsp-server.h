@@ -4,7 +4,7 @@
 #include "micro_rtsp/CRtspSession.h"
 #include <vector>
 
-#define MSEC_PER_FRAME 100    // Frame interval, Unit: ms
+#define MSEC_PER_FRAME 150    // Frame interval, Unit: ms
 
 struct client_stream {
   CStreamer *streamer{nullptr};
@@ -20,15 +20,16 @@ private:
   // Camera sensor settings
   int8_t _vflip;
   int8_t _hmirror;
+  framesize_t _framesize;
   int8_t _brightness;
   int8_t _contrast;
   int8_t _saturation;
 
 public:
   // Constructor
-  Esp32camRtsp(uint16_t port=554, uint8_t max_clients=1,
+  Esp32camRtsp(uint16_t port=554, uint8_t max_clients=1, framesize_t framesize=FRAMESIZE_SVGA,
     int8_t vflip=0, int8_t hmirror=0, int8_t brightness=0, int8_t contrast=0, int8_t saturation=0)
-    : rtsp_port(port), max_client_count(max_clients),
+    : rtsp_port(port), max_client_count(max_clients), _framesize(framesize),
       _vflip(vflip), _hmirror(hmirror), _brightness(brightness), _contrast(contrast), _saturation(saturation) {};
   // Destructor
   ~Esp32camRtsp() {};
@@ -44,8 +45,8 @@ public:
     // Supported boards: esp32cam_config, esp32cam_aithinker_config, esp32cam_ttgo_t_config
     camera_config_t config = esp32cam_aithinker_config;
     // Possible frame sizes: UXGA(1600x1200),SXGA(1280x1024),XGA(1024x768),SVGA(800x600),VGA(640x480),CIF(400x296),QVGA(320x240),HQVGA(240x176),QQVGA(160x120)
-    config.frame_size = FRAMESIZE_XGA;
-    // config.xclk_freq_hz = 10000000;  // default: 20000000
+    config.frame_size = _framesize;
+    config.xclk_freq_hz = 16000000;  // default: 20000000
     cam.init(config);
 
     sensor_t *s = esp_camera_sensor_get();
@@ -54,6 +55,14 @@ public:
     s->set_brightness(s, _brightness);    // -2 ~ 2
     s->set_contrast(s, _contrast);        // -2 ~ 2
     s->set_saturation(s, _saturation);    // -2 ~ 2
+    s->set_whitebal(s, 1);       // 0 = disable , 1 = enable
+    s->set_awb_gain(s, 1);       // 0 = disable , 1 = enable
+    s->set_exposure_ctrl(s, 1);  // 0 = disable , 1 = enable
+    s->set_aec2(s, 1);           // 0 = disable , 1 = enable
+    s->set_gain_ctrl(s, 1);      // 0 = disable , 1 = enable
+    s->set_wpc(s, 1);            // 0 = disable , 1 = enable
+    s->set_raw_gma(s, 1);        // 0 = disable , 1 = enable
+    s->set_lenc(s, 1);           // 0 = disable , 1 = enable
 
     rtspServer = WiFiServer(rtsp_port, max_client_count);
     rtspServer.begin(rtsp_port);

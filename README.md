@@ -15,8 +15,8 @@
 - Now support multiple simultaneous client connections (2024/7/30)
 - Add camera sensor settings as input arguments on class construction
 - If the connector of a flexible printed circuit (FPC) of OV2640 is overheated, try to change values in esp32cam-rtsp-server.h
-  - #define MSEC_PER_FRAME 200
-  - config.xclk_freq_hz = 10000000;
+  - #define MSEC_PER_FRAME 200 (default:150)
+  - config.xclk_freq_hz = 10000000; (default:16000000, max.=20000000)
 
 ## Usage
 
@@ -28,16 +28,22 @@
   - Syntax
 
         auto Esp32CamRtspServer = new Esp32camRtsp(
-            [RTSP_PORT], [MAX_CLIENT_COUNT],
+            [RTSP_PORT], [MAX_CLIENT_COUNT], [FRAME_SIZE],
             [VERTICAL_FLIP], [HORRIZONTAL_MIRROR], [BRIGHTNESS], [CONTRAST], [SATURATION]
         )
 
         Value Ranges:
+          FRAME_SIZE*: FRAMESIZE_UXGA | FRAMESIZE_SXGA | FRAMESIZE_XGA | FRAMESIZE_SVGA |
+                      FRAMESIZE_VGA | FRAMESIZE_CIF | FRAMESIZE_QVGA | FRAMESIZE_HQVGA |
+                      FRAMESIZE_QQVGA
           VERTICAL_FLIP: 0 | 1
           HORRIZONTAL_MIRROR: 0 | 1
           BRIGHTNESS: -2 ~ 2 (integer)
           CONTRAST:   -2 ~ 2 (integer)
           SATURATION: -2 ~ 2 (integer)
+        
+        * UXGA(1600x1200), SXGA(1280x1024), XGA(1024x768), SVGA(800x600), VGA(640x480),
+          CIF(400x296), QVGA(320x240), HQVGA(240x176), QQVGA(160x120)
 
     Please refer to https://randomnerdtutorials.com/esp32-cam-ov2640-camera-settings/ for more settings.
 
@@ -45,7 +51,7 @@
     - Esp32camRtsp() - default rtsp port 554, max. client count 1
     - Esp32camRtsp(8554) - custom rtsp port 8554, max. client count 1
     - Esp32camRtsp(8554,4) - custom rtsp port 8554, max. client count 4
-    - Esp32camRtsp(554,1,0,0,1,0,-1) - default rtsp port 554, max. client count 1, brightness = 1, contrast = 0, saturation = -1
+    - Esp32camRtsp(554,1,FRAMESIZE_SXGA, 0,0,1,0,-1) - default rtsp port 554, max. client count 1, frame size = SXGA, brightness = 1, contrast = 0, saturation = -1
 
 - Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
 
