@@ -46,7 +46,7 @@ public:
     camera_config_t config = esp32cam_aithinker_config;
     // Possible frame sizes: UXGA(1600x1200),SXGA(1280x1024),XGA(1024x768),SVGA(800x600),VGA(640x480),CIF(400x296),QVGA(320x240),HQVGA(240x176),QQVGA(160x120)
     config.frame_size = _framesize;
-    config.xclk_freq_hz = 16000000;  // default: 20000000
+    config.xclk_freq_hz = 16000000;  // 10MHz ~ 20MHz
     cam.init(config);
 
     sensor_t *s = esp_camera_sensor_get();
@@ -58,7 +58,7 @@ public:
     s->set_special_effect(s, 0); // 0 to 6 (0 - No Effect, 1 - Negative, 2 - Grayscale, 3 - Red Tint, 4 - Green Tint, 5 - Blue Tint, 6 - Sepia)
     s->set_whitebal(s, 1);       // 0 = disable , 1 = enable
     s->set_awb_gain(s, 1);       // 0 = disable , 1 = enable
-    s->set_wb_mode(s, 4);        // 0 to 4 - if awb_gain enabled (0 - Auto, 1 - Sunny, 2 - Cloudy, 3 - Office, 4 - Home)
+    s->set_wb_mode(s, 0);        // 0 to 4 - if awb_gain enabled (0 - Auto, 1 - Sunny, 2 - Cloudy, 3 - Office, 4 - Home)
     s->set_exposure_ctrl(s, 1);  // 0 = disable , 1 = enable
     s->set_aec2(s, 1);           // 0 = disable , 1 = enable
     s->set_ae_level(s, 0);       // -2 to 2
