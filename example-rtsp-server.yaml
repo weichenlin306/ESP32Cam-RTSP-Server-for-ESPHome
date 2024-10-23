@@ -51,7 +51,9 @@ custom_component:
       auto Esp32CamRtspServer = new Esp32camRtsp();         // Use default rtsp port 554
       // auto Esp32CamRtspServer = new Esp32camRtsp(8554);  // Use rtsp port 8554
       // auto Esp32CamRtspServer = new Esp32camRtsp(554,4); // Use default rtsp port 554 and max. client count 4
-      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,-1);  // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, and saturation=-1
+      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,1,-1);    // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, contrast=1, and saturation=-1
+      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,1,-1,0);  // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, contrast=1, saturation=-1, and gain_ctrl=0
+                                                                              // agc_gain can be set on gain_ctrl=0 (disabled). This measure makes the whole picture brighter.
       return {Esp32CamRtspServer};    
     components: 
       - id: my_esp32cam_rtsp_server
