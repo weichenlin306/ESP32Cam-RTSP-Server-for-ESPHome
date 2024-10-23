@@ -28,8 +28,8 @@
   - Syntax
 
         auto Esp32CamRtspServer = new Esp32camRtsp(
-            [RTSP_PORT], [MAX_CLIENT_COUNT], [FRAME_SIZE],
-            [VERTICAL_FLIP], [HORRIZONTAL_MIRROR], [BRIGHTNESS], [CONTRAST], [SATURATION]
+            [RTSP_PORT], [MAX_CLIENT_COUNT], [FRAME_SIZE], [VERTICAL_FLIP], [HORRIZONTAL_MIRROR],
+            [BRIGHTNESS], [CONTRAST], [SATURATION], [GAIN_CONTROL], [AGC_GAIN]
         )
 
         Value Ranges:
@@ -41,6 +41,8 @@
           BRIGHTNESS: -2 ~ 2 (integer)
           CONTRAST:   -2 ~ 2 (integer)
           SATURATION: -2 ~ 2 (integer)
+          GAIN_CONTROL: 0 | 1 (default=1, enabled)
+          AGC_GAIN: 0 ~ 30 (default = 6) (effective if GAIN_CONTROL is disabled (=0))
         
         * UXGA(1600x1200), SXGA(1280x1024), XGA(1024x768), SVGA(800x600), VGA(640x480),
           CIF(400x296), QVGA(320x240), HQVGA(240x176), QQVGA(160x120)
@@ -52,6 +54,7 @@
     - Esp32camRtsp(8554) - custom rtsp port 8554, max. client count 1
     - Esp32camRtsp(8554,4) - custom rtsp port 8554, max. client count 4
     - Esp32camRtsp(554,1,FRAMESIZE_SXGA, 0,0,1,0,-1) - default rtsp port 554, max. client count 1, frame size = SXGA, brightness = 1, contrast = 0, saturation = -1
+    - Esp32camRtsp(554,1,FRAMESIZE_SXGA, 0,0,1,0,-1,0,7) - set AGC_GAIN value to 7 on GAIN_CONTROL disabled
 
 - Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
 
