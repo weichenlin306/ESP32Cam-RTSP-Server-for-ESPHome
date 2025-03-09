@@ -44,6 +44,27 @@ wifi:
 captive_portal:
 
 esp32cam_rtsp_server:
-  resolution: SVGA
-  vertical_flip: true
+  # camera: esp32cam_aithinker
+  # external_clock_frequency: 20000000
+  # port: 554
+  resolution: UXGA
+  # brightness: 0
+  # contrast: 0
+  # saturation: 0
+  # special_effect: none
+  # white_balance: true
+  # awb_gain: true
+  # exposure_control: true
+  # aec2: true
+  # ae_level: 0
+  # aec_value: 300
+  # gain_control: false
+  # agc_gain: 6
+  # gain_ceiling: 2x
+  # bpc: false
+  # wpc: true
+  # raw_gma: true
   horizontal_mirror: true
+  vertical_flip: true
+  # lenc: true
+  # dcw: true
