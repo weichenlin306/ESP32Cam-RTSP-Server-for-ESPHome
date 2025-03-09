@@ -58,6 +58,10 @@
 
 - Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
 
+## Upgrade to External Component for Local Use
+
+- See `EXTERNAL COMPONENT SETUP INSTRUCTIONS.md` for detail.
+
 ## References
 
 - Micro-RTSP: <https://github.com/geeksville/Micro-RTSP>

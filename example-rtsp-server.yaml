@@ -1,9 +1,10 @@
 esphome:
-  name: example-rtsp-server
-  friendly_name: my-esp32cam-rtsp-server
-  includes:
-    - micro_rtsp
-    - esp32cam-rtsp-server.h
+  name: my-rtsp-test-esp32-cam
+  friendly_name: My RTSP Test ESP32 Cam
+  includes: micro_rtsp
+
+external_components:
+  - source: components
 
 esp32:
   board: esp32dev
@@ -20,40 +21,29 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "TSPMwbzQg7o5ZghvHGYGURU7VawRuaUWKW79Llftry8="
+    key: "01234567890123456789012345678901234567890123"
 
 ota:
   - platform: esphome
-    password: "eb8b04c98aaaa66521090ac073acc83c"
+    password: "01234567890123456789012345678901"
 
 wifi:
-  networks:                   # Multiple WiFi AP candidates
-  - ssid: !secret wifi_ssid_2f
-    password: !secret wifi_password
-  - ssid: !secret wifi_ssid_1f
+  networks:
+  - ssid: !secret wifi_ssid
     password: !secret wifi_password
   manual_ip:
-    static_ip: 192.168.1.77   # Replace with your desired static IP
-    gateway: 192.168.1.254    # Replace with your effective gateway
+    static_ip: 192.168.100.10
+    gateway: 192.168.100.254
     subnet: 255.255.255.0
-    dns1: 192.168.1.254       # Replace with your preferred DNS
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Example-Rtsp-Server Fallback Hotspot"
-    password: "BhjkvK5HE5oD"
+    ssid: "My-Rtsp-Test-Esp32-Cam"
+    password: "012345678901"
 
 captive_portal:
 
-custom_component:
-  - lambda: |-
-      // auto fs = FRAMESIZE_SVGA;                          // Default frame size. Uncomment and assign a desired frame size.
-      auto Esp32CamRtspServer = new Esp32camRtsp();         // Use default rtsp port 554
-      // auto Esp32CamRtspServer = new Esp32camRtsp(8554);  // Use rtsp port 8554
-      // auto Esp32CamRtspServer = new Esp32camRtsp(554,4); // Use default rtsp port 554 and max. client count 4
-      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,1,-1);    // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, contrast=1, and saturation=-1
-      // auto Esp32CamRtspServer = new Esp32camRtsp(8554,1,fs,0,0,2,1,-1,0);  // Use rtsp port 8554, max. client count 1, framesize=fs, brightness=2, contrast=1, saturation=-1, and gain_ctrl=0
-                                                                              // agc_gain can be set on gain_ctrl=0 (disabled). This measure makes the whole picture brighter.
-      return {Esp32CamRtspServer};    
-    components: 
-      - id: my_esp32cam_rtsp_server
+esp32cam_rtsp_server:
+  resolution: SVGA
+  vertical_flip: true
+  horizontal_mirror: true
