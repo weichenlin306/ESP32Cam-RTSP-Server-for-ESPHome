@@ -12,10 +12,6 @@ Component name: `esp32cam_rtsp_server`
 
 - micro_rtsp (folder)
 
-## Complete Example YAML file
-
-- example_external_component_setup.yaml
-
 ## Prerequisites and Prework
 
 - Copy "micro_rtsp" folder to config/esphome
@@ -59,7 +55,10 @@ esphome
       horizontal_mirror: false
       .....
     ```
-- Please see `example-rtsp-server.yaml` for an overview.
+
+## Complete Example YAML file
+
+- example_external_component_setup.yaml
 
 ## Configuration Variables in YAML
 
