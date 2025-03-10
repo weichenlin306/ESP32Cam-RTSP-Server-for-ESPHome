@@ -3,6 +3,7 @@ import esphome.codegen as cg
 from esphome.const import CONF_ID
 
 CODEOWNERS = ["@weichenlin306"]
+DEPENDENCIES = ["psram"]
 MULTI_CONF = True
 
 CAMERAS = {
