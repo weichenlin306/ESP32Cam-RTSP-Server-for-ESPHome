@@ -6,9 +6,9 @@ CODEOWNERS = ["@weichenlin306"]
 MULTI_CONF = True
 
 CAMERAS = {
-  "esp32cam": 0,            #  esp32cam_config
-  "esp32cam_aithinker": 1,  # esp32cam_aithinker_config
-  "ttgo_t": 2,              # esp32cam_ttgo_t_config
+  "ESP32CAM": 0,            #  esp32cam_config
+  "ESP32CAM_AITHINKER": 1,  # esp32cam_aithinker_config
+  "ESP32CAM_TTGO_T": 2,     # esp32cam_ttgo_t_config
 }
 
 FRAME_SIZES = {
@@ -41,6 +41,34 @@ FRAME_SIZES = {
   "5MP": 24,      # 2592x1944
 }
 
+SPECIAL_EFFECTS = {
+  "NONE": 0,        # No effect
+  "NEGATIVE": 1,    # Negative
+  "GRAYSCALE": 2,   # Grayscale
+  "RED_TINT": 3,    # Red tint
+  "GREEN_TINT": 4,  # Green tint
+  "BLUE_TINT": 5,   # Blue tint
+  "SEPIA": 6,       # Sepia
+}
+
+WHITE_BALANCES = {
+  "AUTO": 0,
+  "SUNNY": 1,
+  "CLOUDY": 2,
+  "OFFICE": 3,
+  "HOME": 4,
+}
+
+GAIN_CEILINGS = {
+  "2X": 0,
+  "4X": 1,
+  "8X": 2,
+  "16X": 3,
+  "32X": 4,
+  "64X": 5,
+  "128X": 6,
+}
+
 CONF_CAMERA = "camera"
 CONF_XCLK_FREQ_HZ = "external_clock_frequency"
 CONF_PORT = "port"
@@ -50,23 +78,23 @@ CONF_BRIGHTNESS = "brightness"
 CONF_CONTRAST = "contrast"
 CONF_SATURATION = "saturation"
 CONF_SPECIAL_EFFECT = "special_effect"
-CONF_WHITE_BALANCE_ENABLED = "white_balance_enabled"
-CONF_AWB_GAIN_ENABLED = "awb_gain_enabled"
+CONF_WHITE_BALANCE = "white_balance"
+CONF_AWB_GAIN = "awb_gain"
 CONF_WB_MODE = "wb_mode"
-CONF_EXPOSURE_CTRL_ENABLED = "exposure_control_enabled"
-CONF_AEC2_ENABLED = "aec2_enabled"
+CONF_EXPOSURE_CTRL = "exposure_control"
+CONF_AEC2 = "aec2"
 CONF_AE_LEVEL = "ae_level"
 CONF_AEC_VALUE = "aec_value"
-CONF_GAIN_CTRL_ENABLED = "gain_control_enabled"
+CONF_GAIN_CTRL = "gain_control"
 CONF_AGC_GAIN = "agc_gain"
-CONF_GAINCEILING = "gainceiling"
-CONF_BPC_ENABLED = "bpc_enabled"
-CONF_WPC_ENABLED = "wpc_enabled"
-CONF_RAW_GMA_ENABLED = "raw_gma_enabled"
-CONF_HMIRROR_ENABLED = "horizontal_mirror_enabled"
-CONF_VFLIP_ENABLED = "vertical_flip_enabled"
-CONF_LENC_ENABLED = "lenc_enabled"
-CONF_DCW_ENABLED = "dcw_enabled"
+CONF_GAINCEILING = "gain_ceiling"
+CONF_BPC = "bpc"
+CONF_WPC = "wpc"
+CONF_RAW_GMA = "raw_gma"
+CONF_HMIRROR = "horizontal_mirror"
+CONF_VFLIP = "vertical_flip"
+CONF_LENC = "lenc"
+CONF_DCW = "dcw"
 
 # C++ namespace
 esp32cam_rtsp_server_ns = cg.esphome_ns.namespace("esp32cam_rtsp_server")
@@ -75,7 +103,7 @@ Esp32camRtsp = esp32cam_rtsp_server_ns.class_("Esp32camRtsp", cg.Component)
 CONFIG_SCHEMA = cv.Schema(
   {
     cv.GenerateID(): cv.declare_id(Esp32camRtsp),
-    cv.Optional(CONF_CAMERA, default="esp32cam_aithinker"): cv.enum(CAMERAS, lower=True),
+    cv.Optional(CONF_CAMERA, default="esp32cam_aithinker"): cv.enum(CAMERAS, upper=True),
     cv.Optional(CONF_XCLK_FREQ_HZ, default=16000000): cv.int_range(min=10000000, max=20000000),
     cv.Optional(CONF_PORT, default=554): cv.port,
     cv.Required(CONF_RESOLUTION): cv.enum(FRAME_SIZES, upper=True),
@@ -83,24 +111,24 @@ CONFIG_SCHEMA = cv.Schema(
     cv.Optional(CONF_BRIGHTNESS, default=0): cv.int_range(min=-2, max=2),
     cv.Optional(CONF_CONTRAST, default=0): cv.int_range(min=-2, max=2),
     cv.Optional(CONF_SATURATION, default=0): cv.int_range(min=-2, max=2),
-    cv.Optional(CONF_SPECIAL_EFFECT, default=0): cv.int_range(min=0, max=6),
-    cv.Optional(CONF_WHITE_BALANCE_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_AWB_GAIN_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_WB_MODE, default=0): cv.int_range(min=0, max=4),
-    cv.Optional(CONF_EXPOSURE_CTRL_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_AEC2_ENABLED, default=True): cv.boolean,
+    cv.Optional(CONF_SPECIAL_EFFECT, default="none"): cv.enum(SPECIAL_EFFECTS, upper=True),
+    cv.Optional(CONF_WHITE_BALANCE, default=True): cv.boolean,
+    cv.Optional(CONF_AWB_GAIN, default=True): cv.boolean,
+    cv.Optional(CONF_WB_MODE, default="auto"): cv.enum(WHITE_BALANCES, upper=True),
+    cv.Optional(CONF_EXPOSURE_CTRL, default=True): cv.boolean,
+    cv.Optional(CONF_AEC2, default=True): cv.boolean,
     cv.Optional(CONF_AE_LEVEL, default=0): cv.int_range(min=-2, max=2),
     cv.Optional(CONF_AEC_VALUE, default=300): cv.int_range(min=0, max=1200),
-    cv.Optional(CONF_GAIN_CTRL_ENABLED, default=False): cv.boolean,
+    cv.Optional(CONF_GAIN_CTRL, default=False): cv.boolean,
     cv.Optional(CONF_AGC_GAIN, default=6): cv.int_range(min=0, max=30),
-    cv.Optional(CONF_GAINCEILING, default=0): cv.int_range(min=0, max=6),
-    cv.Optional(CONF_BPC_ENABLED, default=False): cv.boolean,
-    cv.Optional(CONF_WPC_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_RAW_GMA_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_HMIRROR_ENABLED, default=False): cv.boolean,
-    cv.Optional(CONF_VFLIP_ENABLED, default=False): cv.boolean,
-    cv.Optional(CONF_LENC_ENABLED, default=True): cv.boolean,
-    cv.Optional(CONF_DCW_ENABLED, default=True): cv.boolean,
+    cv.Optional(CONF_GAINCEILING, default="2x"): cv.enum(GAIN_CEILINGS, upper=True),
+    cv.Optional(CONF_BPC, default=False): cv.boolean,
+    cv.Optional(CONF_WPC, default=True): cv.boolean,
+    cv.Optional(CONF_RAW_GMA, default=True): cv.boolean,
+    cv.Optional(CONF_HMIRROR, default=False): cv.boolean,
+    cv.Optional(CONF_VFLIP, default=False): cv.boolean,
+    cv.Optional(CONF_LENC, default=True): cv.boolean,
+    cv.Optional(CONF_DCW, default=True): cv.boolean,
   },
 ).extend(cv.COMPONENT_SCHEMA)
 
@@ -109,28 +137,28 @@ SETTERS = {
   CONF_XCLK_FREQ_HZ: "set_xclk_freq_hz",
   CONF_PORT: "set_port",
   CONF_RESOLUTION: "set_resolution",
-  CONF_VFLIP_ENABLED: "set_vertical_flip",
-  CONF_HMIRROR_ENABLED: "set_horizontal_mirror",
+  CONF_VFLIP: "set_vertical_flip",
+  CONF_HMIRROR: "set_horizontal_mirror",
   CONF_BRIGHTNESS: "set_brightness",
   CONF_CONTRAST: "set_contrast",
   CONF_SATURATION: "set_saturation",
-  CONF_GAIN_CTRL_ENABLED: "set_gain_control",
+  CONF_GAIN_CTRL: "set_gain_control",
   CONF_AGC_GAIN: "set_agc_gain",
 
   CONF_SPECIAL_EFFECT: "set_special_effect",
-  CONF_WHITE_BALANCE_ENABLED: "set_white_balance",
-  CONF_AWB_GAIN_ENABLED: "set_awb_gain",
+  CONF_WHITE_BALANCE: "set_white_balance",
+  CONF_AWB_GAIN: "set_awb_gain",
   CONF_WB_MODE: "set_wb_mode",
-  CONF_EXPOSURE_CTRL_ENABLED: "set_exposure_control",
-  CONF_AEC2_ENABLED: "set_aec2",
+  CONF_EXPOSURE_CTRL: "set_exposure_control",
+  CONF_AEC2: "set_aec2",
   CONF_AE_LEVEL: "set_ae_level",
   CONF_AEC_VALUE: "set_aec_value",
   CONF_GAINCEILING: "set_gainceiling",
-  CONF_BPC_ENABLED: "set_bpc",
-  CONF_WPC_ENABLED: "set_wpc",
-  CONF_RAW_GMA_ENABLED: "set_raw_gma",
-  CONF_LENC_ENABLED: "set_lenc",
-  CONF_DCW_ENABLED: "set_dcw",
+  CONF_BPC: "set_bpc",
+  CONF_WPC: "set_wpc",
+  CONF_RAW_GMA: "set_raw_gma",
+  CONF_LENC: "set_lenc",
+  CONF_DCW: "set_dcw",
 }
 
 async def to_code(config):

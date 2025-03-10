@@ -28,23 +28,23 @@ public:
   void set_contrast(int8_t contrast) { this->contrast_ = contrast; }
   void set_saturation(int8_t saturation) { this->saturation_ = saturation; }
   void set_special_effect(int8_t special_effect) { this->special_effect_ = special_effect; }
-  void set_white_balance(bool whitebal_enabled) { this->whitebal_ = whitebal_enabled?1:0; }
-  void set_awb_gain(bool awb_gain_enabled) { this->awb_gain_ = awb_gain_enabled?1:0; }
+  void set_white_balance(bool whitebal) { this->whitebal_ = whitebal?1:0; }
+  void set_awb_gain(bool awb_gain) { this->awb_gain_ = awb_gain?1:0; }
   void set_wb_mode(int8_t wb_mode) { this->wb_mode_ = wb_mode; }
   void set_exposure_control(bool exposure_ctrl) { this->exposure_ctrl_ = exposure_ctrl?1:0; }
-  void set_aec2(bool aec2_enabled) { this->aec2_ = aec2_enabled?1:0; }
+  void set_aec2(bool aec2) { this->aec2_ = aec2?1:0; }
   void set_ae_level(int8_t ae_level) { this->ae_level_ = ae_level; }
   void set_aec_value(uint16_t aec_value) { this->aec_value_ = aec_value; }
   void set_gain_control(bool gain_ctrl) { this->gain_ctrl_ = gain_ctrl?1:0; }
   void set_agc_gain(int8_t agc_gain) { this->agc_gain_ = agc_gain; }
   void set_gainceiling(int8_t gainceiling) { this->gainceiling_ = gainceiling; }
-  void set_bpc(bool bpc_enabled) { this->bpc_ = bpc_enabled?1:0; }
-  void set_wpc(bool wpc_enabled) { this->wpc_ = wpc_enabled?1:0; }
-  void set_raw_gma(bool raw_gma_enabled) { this->raw_gma_ = raw_gma_enabled?1:0; }
+  void set_bpc(bool bpc) { this->bpc_ = bpc?1:0; }
+  void set_wpc(bool wpc) { this->wpc_ = wpc?1:0; }
+  void set_raw_gma(bool raw_gma) { this->raw_gma_ = raw_gma?1:0; }
   void set_horizontal_mirror(bool hmirror) { this->hmirror_ = hmirror?1:0; }
   void set_vertical_flip(bool vflip) { this->vflip_ = vflip?1:0; }
-  void set_lenc(bool lenc_enabled) { this->lenc_ = lenc_enabled?1:0; }
-  void set_dcw(bool dcw_enabled) { this->dcw_ = dcw_enabled?1:0; }
+  void set_lenc(bool lenc) { this->lenc_ = lenc?1:0; }
+  void set_dcw(bool dcw) { this->dcw_ = dcw?1:0; }
 
   void loop() override;
   void dump_config() override;
