@@ -1,6 +1,6 @@
 #include "esp32cam_rtsp_server.h"
 
-#define MSEC_PER_FRAME 100    // Frame interval, Unit: ms
+#define MSEC_PER_FRAME 150    // Frame interval, Unit: ms
 
 namespace esphome {
 namespace esp32cam_rtsp_server {
