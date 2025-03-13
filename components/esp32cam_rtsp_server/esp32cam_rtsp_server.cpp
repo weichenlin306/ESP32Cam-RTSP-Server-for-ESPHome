@@ -1,7 +1,5 @@
 #include "esp32cam_rtsp_server.h"
 
-#define MSEC_PER_FRAME 150    // Frame interval, Unit: ms
-
 namespace esphome {
 namespace esp32cam_rtsp_server {
 
@@ -13,12 +11,12 @@ camera_config_t camera_config[] = {
   esp32cam_ttgo_t_config
 };
 camera_config_t config;
+static uint32_t msec_per_frame;
 
 OV2640 cam;
 CStreamer *streamer{nullptr};
 CRtspSession *session{nullptr};
 WiFiClient client;
-uint32_t lastFrameTime;
 
 static const char *const TAG = "camera_config";
 
@@ -40,10 +38,13 @@ void Esp32camRtsp::setup()
   esp_err_t err = cam.init(config);
   if (err != ESP_OK) {
     ESP_LOGE(TAG, "esp_camera_init failed: %s", esp_err_to_name(err));
-    ESP_LOGE(TAG, "Wait for 5 seconds to restart...");
-    delay(5000);
+    ESP_LOGE(TAG, "Wait for 3 seconds to restart...");
+    vTaskDelay(3000 / portTICK_PERIOD_MS);
     ESP.restart();
   }
+
+  // Interval between frames
+  msec_per_frame = 1000 / max_framerate_;
 
   sensor_t *s = esp_camera_sensor_get();
   s->set_vflip(s, vflip_);              // Vertical flip: 0|1
@@ -72,21 +73,25 @@ void Esp32camRtsp::setup()
   rtspServer.begin(rtsp_port_);
 }
 
+static uint32_t lastFrameTime;
+static uint32_t now;
+
 void Esp32camRtsp::loop()
 {
   if (session) {
     // If we have an active client connection, just service that until gone
     session->handleRequests(0);   // We don't use a timeout here,
-                                                // instead we send only if we have new enough frames
-    uint32_t now = millis();
-    if (now > lastFrameTime + MSEC_PER_FRAME || /*handle clock rollover*/ now < lastFrameTime) {
+                                  // instead we send only if we have new enough frames
+    now = millis();
+    if (now > lastFrameTime + msec_per_frame || /*handle clock rollover*/ now < lastFrameTime) {
       session->broadcastCurrentFrame(now);
       lastFrameTime = now;
 
       // Check if we are overrunning our max frame rate
       now = millis();
-      if (now > lastFrameTime + MSEC_PER_FRAME)
-        ESP_LOGCONFIG(TAG, "WARNING: The real time-per-frame, %d ms, exceeds that of the current frame rate.\n", now - lastFrameTime);
+      if (now > lastFrameTime + msec_per_frame)
+        ESP_LOGCONFIG(TAG, "WARNING: The real time-per-frame, %d ms, exceeds that of the current frame rate %d fps.\n",
+          now - lastFrameTime, max_framerate_);
     }
 
     if(session->m_stopped) {
@@ -115,6 +120,7 @@ void Esp32camRtsp::dump_config() {
   ESP_LOGCONFIG(TAG, "  HREF Pin: %d", config.pin_href);
   ESP_LOGCONFIG(TAG, "  Pixel Clock Pin: %d", config.pin_pclk);
   ESP_LOGCONFIG(TAG, "  External Clock: Pin:%d Frequency:%u", config.pin_xclk, xclk_freq_hz_);
+  ESP_LOGCONFIG(TAG, "  Maximum Frame Rate: %d fps", max_framerate_);
   ESP_LOGCONFIG(TAG, "  I2C Pins: SDA:%d SCL:%d", config.pin_sccb_sda, config.pin_sccb_scl);
   ESP_LOGCONFIG(TAG, "  Reset Pin: %d", config.pin_reset);
   switch (framesize_) {

@@ -63,8 +63,9 @@ esphome
 ## Configuration Variables in YAML
 
 - **camera** (Optional, string): The configuration name of the camera board.
-    - Possible values: esp32cam, esp32cam__aithinker, esp32cam_ttgo_t.
-- **external_clock_frequency** (Optional, int): Must be between 10000000 and 20000000. Default to `16000000`.
+    - Possible values: `esp32cam`, `esp32cam__aithinker`, `esp32cam_ttgo_t`.
+- **external_clock_frequency** (Optional, int): Must be between 10000000 and 20000000. Be aware of overheating. Default to `16000000`.
+- **max_framerate** (Optional, float): The maximum frame rate the camera will generate images at. Maximum value can be up to 60 with small image sizes. Be aware of overheating. Defaults to `5 fps`.
 - **port** (Optional, int): RTSP port assignment. Default to `554`.
 - **resolution** (Required, string): Display resolution assignment. Possible values:
 

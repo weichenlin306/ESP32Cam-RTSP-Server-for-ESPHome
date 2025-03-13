@@ -72,6 +72,7 @@ GAIN_CEILINGS = {
 
 CONF_CAMERA = "camera"
 CONF_XCLK_FREQ_HZ = "external_clock_frequency"
+CONF_MAX_FRAMERATE = "max_framerate"
 CONF_PORT = "port"
 CONF_RESOLUTION = "resolution"
 
@@ -106,6 +107,7 @@ CONFIG_SCHEMA = cv.Schema(
     cv.GenerateID(): cv.declare_id(Esp32camRtsp),
     cv.Optional(CONF_CAMERA, default="esp32cam_aithinker"): cv.enum(CAMERAS, upper=True),
     cv.Optional(CONF_XCLK_FREQ_HZ, default=16000000): cv.int_range(min=10000000, max=20000000),
+    cv.Optional(CONF_MAX_FRAMERATE, default="5 fps"): cv.All(cv.framerate, cv.Range(min=0, min_included=False, max=60)),
     cv.Optional(CONF_PORT, default=554): cv.port,
     cv.Required(CONF_RESOLUTION): cv.enum(FRAME_SIZES, upper=True),
 
@@ -136,6 +138,7 @@ CONFIG_SCHEMA = cv.Schema(
 SETTERS = {
   CONF_CAMERA: "set_camera",
   CONF_XCLK_FREQ_HZ: "set_xclk_freq_hz",
+  CONF_MAX_FRAMERATE: "set_max_framerate",
   CONF_PORT: "set_port",
   CONF_RESOLUTION: "set_resolution",
   CONF_VFLIP: "set_vertical_flip",

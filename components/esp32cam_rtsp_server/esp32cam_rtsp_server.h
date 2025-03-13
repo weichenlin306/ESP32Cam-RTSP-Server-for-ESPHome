@@ -21,6 +21,7 @@ public:
 
   void set_camera(int8_t camera);
   void set_xclk_freq_hz(uint32_t xclk_freq_hz) { this->xclk_freq_hz_ = xclk_freq_hz; } 
+  void set_max_framerate(uint8_t max_framerate) { this->max_framerate_ = max_framerate; }
   void set_port(uint16_t port) { this->rtsp_port_ = port; }
   void set_resolution(int8_t framesize) { this->framesize_ = (framesize_t)framesize; }
 
@@ -51,8 +52,9 @@ public:
 
 protected:
   uint32_t xclk_freq_hz_{16000000};
+  float  max_framerate_{5};
   uint16_t rtsp_port_{554};
-  framesize_t framesize_{FRAMESIZE_SVGA};
+  framesize_t framesize_{(framesize_t)0};
 
   int8_t brightness_{0};
   int8_t contrast_{0};
