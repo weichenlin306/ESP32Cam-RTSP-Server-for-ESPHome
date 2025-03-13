@@ -90,7 +90,7 @@ void Esp32camRtsp::loop()
       // Check if we are overrunning our max frame rate
       now = millis();
       if (now > lastFrameTime + msec_per_frame)
-        ESP_LOGCONFIG(TAG, "WARNING: The real time-per-frame, %d ms, exceeds that of the current frame rate %d fps.\n",
+        ESP_LOGCONFIG(TAG, "WARNING: The real time-per-frame, %d ms, exceeds that of the current frame rate %4.1f fps.\n",
           now - lastFrameTime, max_framerate_);
     }
 
