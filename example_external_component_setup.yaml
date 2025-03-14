@@ -44,8 +44,10 @@ wifi:
 captive_portal:
 
 esp32cam_rtsp_server:
+  # Uncomment the following settings to set specific values.
   # camera: esp32cam_aithinker
-  # external_clock_frequency: 20000000
+  # external_clock_frequency: 16000000
+  # max_framerate: 5 fps
   # port: 554
   resolution: UXGA
   # brightness: 0
