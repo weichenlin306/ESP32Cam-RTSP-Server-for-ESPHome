@@ -120,7 +120,7 @@ void Esp32camRtsp::dump_config() {
   ESP_LOGCONFIG(TAG, "  HREF Pin: %d", config.pin_href);
   ESP_LOGCONFIG(TAG, "  Pixel Clock Pin: %d", config.pin_pclk);
   ESP_LOGCONFIG(TAG, "  External Clock: Pin:%d Frequency:%u", config.pin_xclk, xclk_freq_hz_);
-  ESP_LOGCONFIG(TAG, "  Maximum Frame Rate: %d fps", max_framerate_);
+  ESP_LOGCONFIG(TAG, "  Maximum Frame Rate: %4.1f fps", max_framerate_);
   ESP_LOGCONFIG(TAG, "  I2C Pins: SDA:%d SCL:%d", config.pin_sccb_sda, config.pin_sccb_scl);
   ESP_LOGCONFIG(TAG, "  Reset Pin: %d", config.pin_reset);
   switch (framesize_) {
