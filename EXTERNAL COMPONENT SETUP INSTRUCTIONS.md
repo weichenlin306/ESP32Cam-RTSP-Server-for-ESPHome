@@ -39,9 +39,12 @@ esphome
       friendly_name: ...
       includes: micro_rtsp
     ```
-- Make sure to use component `psram` and use the recommended settings as follows.
+- ~~Make sure to use component `psram` and use the recommended settings as follows.~~
+
+  ( Use `AUTO_LOAD = ["psram"]` in \_\_init_\_\.py, instead, for ESPHome v2025.4.0 and later. )
 
     ```
+    (No more use this.)
     psram:
       mode: octal
       speed: 80MHz

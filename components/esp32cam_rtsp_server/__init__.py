@@ -3,7 +3,8 @@ import esphome.codegen as cg
 from esphome.const import CONF_ID
 
 CODEOWNERS = ["@weichenlin306"]
-DEPENDENCIES = ["psram"]
+DEPENDENCIES = ["esp32"]
+AUTO_LOAD = ["psram"]
 MULTI_CONF = True
 
 CAMERAS = {
