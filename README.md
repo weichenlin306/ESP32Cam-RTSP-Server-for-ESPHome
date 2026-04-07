@@ -138,6 +138,7 @@
           # Optional, default value is true
           dcw: true
         
+        # Optional: LED Light switch
         switch:
         - platform: gpio
           # Change to LED pin for your board
