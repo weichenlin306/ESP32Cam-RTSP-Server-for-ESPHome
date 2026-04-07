@@ -120,8 +120,8 @@
           # Optional, default value is 6
           # Available values: 0 - 30
           agc_gain: 6
-          *# Optional, default value is 2x*
-          *# Available values: 2x, 4x, 8x, 16x, 32x, 64x, 128x*
+          # Optional, default value is 2x
+          # Available values: 2x, 4x, 8x, 16x, 32x, 64x, 128x
           gain_ceiling: 2x
           # Optional, default value is false
           bpc: false
