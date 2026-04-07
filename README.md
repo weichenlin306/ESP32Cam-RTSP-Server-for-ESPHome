@@ -74,7 +74,7 @@
 
         esp32cam_rtsp_server:
           # Optional, default value is esp32cam_aithinker
-          # Available camera types: esp32cam_aithinker, esp32cam_s3_eye, esp32cam_ttgo_t
+          # Available camera types: esp32cam_config, esp32cam_aithinker, esp32cam_s3_eye, esp32cam_ttgo_t
           camera: esp32cam_aithinker
           # Optional, default value is 20000000 (20MHz)
           # Available values: 10000000 - 20000000
@@ -137,6 +137,19 @@
           lenc: true
           # Optional, default value is true
           dcw: true
+        
+        switch:
+        - platform: gpio
+          # Change to LED pin for your board
+          pin: GPIO4
+          id: ledPin
+          name: "LED Light"
+          on_turn_on: 
+            then:
+              # Turn on LED for 10 seconds
+              - delay: 10s    
+              - switch.turn_off: ledPin
+
 
     Please refer to https://randomnerdtutorials.com/esp32-cam-ov2640-camera-settings/ for more settings.
 
