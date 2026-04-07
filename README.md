@@ -1,4 +1,4 @@
-# ESP32Cam-RTSP-Server-for-ESPHome (UNDER CONSTRUCTION)
+# ESP32Cam-RTSP-Server-for-ESPHome
 
  ESP32Cam RTSP Server for ESPHome (revision for ESPHome 2025.7.0 and later)
 
