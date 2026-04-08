@@ -18,8 +18,8 @@
 
 ## Usage
 
-- Place "esp32cam-rtsp-server" and "micro_rtsp" folders in the /config/esphome/components folder
-- Use esp32cam-rtsp-server as an external component in ESPHome
+- Choose a pair of "esp32cam-rtsp-server" and "micro_rtsp" folders from the same framework folder and place them in the /config/esphome/components folder
+- Use esp32cam-rtsp-server as an external component of ESPHome
 - Configure your YAML project file
 
   - The component "psram" is autoloaded, so you don't need to add it to your YAML file
@@ -37,7 +37,7 @@
         esp32:
           board: esp32dev
           framework:
-            # Choose between arduino and esp-idf
+            # Choose between arduino and esp-idf in accordance with the chosen framework
             type: arduino   
 
         # Enable logging
@@ -55,11 +55,16 @@
             password: "2a96d7ecbd32092ef6a7a8c78ccd9cc2" 
 
         wifi:
-            ssid: "your_ssid"
-          password: "your_password"
+          # Use multiple networks for redundancy
+          networks:
+            - ssid: "your_ssid_1"
+              password: "your_password_1"
+            - ssid: "your_ssid_2"
+              password: "your_password_2"
 
           # Optional: Set a static IP address
           manual_ip:
+            # Change to your preferred IP address, gateway, subnet, and DNS server
             static_ip: 192.168.1.100
             gateway: 192.168.1.254
             subnet: 255.255.255.0
