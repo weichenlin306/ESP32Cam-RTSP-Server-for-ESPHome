@@ -7,61 +7,38 @@
 - Micro-RTSP: <https://github.com/geeksville/Micro-RTSP>
 - esp32cam-rtsp: <https://github.com/rzeldent/esp32cam-rtsp>
 
-## Features
+## Breaking Changes
 
-- Re-organizing ESPHome component structure to instantly switch between the Arduino and the ESP-IDF frameworks
-- Upgrading and optimizing the code to use both ESP-CAM and ESP-S3-CAM boards
-- Arduino framework and ESP-IDF framework are supported, respectively
-- The issues from the code using the ESP-IDF framework in Frigate have been solved.
-- Upgrades are assisted by the AI assistant, Antigravity
-- The original micro_rtsp is now a specialized submodule under each framework folder
-- Better video streaming with ESP-IDF framework on an ESP32-S3-CAM board
-
-## Folder structure
-
-```
-  esphome ── components ├── arduino ├── esp32cam_rtsp_server
-                        │           └── micro_rtsp
-                        └── esp-idf ├── esp32cam_rtsp_server
-                                    └── micro_rtsp
-```
+- Key RSTP transmission infrastructure has been revised to suite ESPHome 2025.7.0 and later
+- Both Arduino framework and ESP-IDF framework are supported, respectively
+- Upgrades is assisted by AI assistant, Antigravity
+- The micro_rtsp folder is no longer needed; it is now a specified submodule under each framework folder
+- The module under ESP-IDF framework uses more modern RTP/MJPEG transmission features than the one under Arduino framework, requiring a newer decoder to decode
+- The module under Arduino framework is more compatible with older ESP32Cam boards, but it is not recommended to use it for new projects
 
 ## Usage
 
-- Put all "components" subfolders into the "esphome/components" folder
+- Choose a pair of "esp32cam-rtsp-server" and "micro_rtsp" folders from the same framework folder and place them in the /config/esphome/components folder
 - Use esp32cam-rtsp-server as an external component of ESPHome
 - Configure your YAML project file
 
-  - PSRAM is automatically loaded for ESP32-CAM. Manual addition should be done for ESP32-S3-CAM.
+  - The component "psram" is autoloaded, so you don't need to add it to your YAML file
   - Configure your YAML file as follows:
 
-        substitutions:
-          # Available frameworks: arduino, esp-idf
-          framework: esp-idf
-        
         esphome:
           # Change to your preferred camera name
           name: test-cam    
           friendly_name: test-cam
-          includes: components/${framework}/micro_rtsp
+          includes: components/micro_rtsp
 
         external_components:
-          - source: components/${framework}/
-
-        # These PSRAM settings are only required for the ESP32-S3-CAM board
-        psram:
-          mode: octal
-          speed: 80MHZ
+          - source: components
 
         esp32:
-          # Available boards: ESP32, ESP32S3
-          variant: ESP32S3
+          board: esp32dev
           framework:
-            type: ${framework} 
-            # Uncomment advanced parameters if ESP_LOG displays warning messages  
-            # advanced:
-            #   minimum_chip_revision: "3.1"
-            #   sram1_as_iram: true
+            # Choose between arduino and esp-idf in accordance with the chosen framework
+            type: arduino   
 
         # Enable logging
         logger:
@@ -101,19 +78,19 @@
         captive_portal:
 
         esp32cam_rtsp_server:
-          # Optional, default value is esp32cam_aithinker for ESP32-CAM, esp32cam_S3_eye for ESP32-S3-CAM
-          # Available camera types: esp32cam_config, esp32cam_aithinker, esp32cam_s3_eye, esp32cam_ttgo_t*
+          # Optional, default value is esp32cam_aithinker
+          # Available camera types: esp32cam_config, esp32cam_aithinker, esp32cam_s3_eye, esp32cam_ttgo_t
           camera: esp32cam_aithinker
           # Optional, default value is 20000000 (20MHz)
           # Available values: 10000000 - 20000000
           external_clock_frequency: 20000000
-          # Optional, default value is 5 fps
+          # Optional, default value is 5 pfs
           # Available values: 1 - 60
-          max_framerate: 5 fps
+          max_framerate: 5 pfs
           # Optional, default value is 554
           port: 554
           # Required, available values: UXGA(1600x1200), SXGA(1280x1024), XGA(1024x768), SVGA(800x600), VGA(640x480), CIF(400x296), QVGA(320x240), HQVGA(240x176), QQVGA(160x120)
-          resolution: XGA
+          resolution: VGA
           # Optional, default value is 0
           # Available values: -2 - 2
           brightness: 0
@@ -178,8 +155,6 @@
               # Turn on LED for 10 seconds
               - delay: 10s    
               - switch.turn_off: ledPin
-
-    \* TTGO T-Camera board is UNTESTED. Use at your own risk.
 
 
     Please refer to https://randomnerdtutorials.com/esp32-cam-ov2640-camera-settings/ for more settings.
