@@ -1,0 +1,701 @@
+# Board: Espressif ESP32-S3-DevKitC-1-N16R8V (16 MB Flash Quad, 8 MB PSRAM Octal)
+# Definition: definitions/boards/esp32-s3-devkitc1-n16r8/manifest.yaml
+
+esphome:
+  name: ha-esp32-cam
+  friendly_name: "HA ESP32 Camera"
+  includes:
+    - components/micro_rtsp
+  on_boot:
+    priority: -200 # Delay 2 seconds to ensure camera and network components are fully ready before syncing factory defaults
+    then:
+      - delay: 2s
+      - lambda: |-
+          ESP_LOGI("camera_control", "Syncing factory defaults to control panel on boot...");
+          auto &fd = id(rtsp_camera).get_factory_defaults();
+          id(cam_brightness).publish_state(fd.brightness);
+          id(cam_contrast).publish_state(fd.contrast);
+          id(cam_saturation).publish_state(fd.saturation);
+          id(cam_ae_level).publish_state(fd.ae_level);
+          id(cam_aec_value).publish_state(fd.aec_value);
+          id(cam_agc_gain).publish_state(fd.agc_gain);
+
+          const char* fx_names[] = {"None", "Negative", "Grayscale", "Red Tint", "Green Tint", "Blue Tint", "Sepia"};
+          if (fd.special_effect >= 0 && fd.special_effect <= 6) {
+            id(cam_special_effect).publish_state(fx_names[fd.special_effect]);
+          }
+
+          const char* wb_names[] = {"Auto", "Sunny", "Cloudy", "Office", "Home"};
+          if (fd.wb_mode >= 0 && fd.wb_mode <= 4) {
+            id(cam_wb_mode).publish_state(wb_names[fd.wb_mode]);
+          }
+
+          const char* gc_names[] = {"2X", "4X", "8X", "16X", "32X", "64X", "128X"};
+          if (fd.gainceiling >= 0 && fd.gainceiling <= 6) {
+            id(cam_gainceiling).publish_state(gc_names[fd.gainceiling]);
+          }
+
+          id(cam_hmirror).publish_state(fd.hmirror != 0);
+          id(cam_vflip).publish_state(fd.vflip != 0);
+          id(cam_whitebal).publish_state(fd.whitebal != 0);
+          id(cam_awb_gain).publish_state(fd.awb_gain != 0);
+          id(cam_exposure_ctrl).publish_state(fd.exposure_ctrl != 0);
+          id(cam_aec2).publish_state(fd.aec2 != 0);
+          id(cam_gain_ctrl).publish_state(fd.gain_ctrl != 0);
+          id(cam_bpc).publish_state(fd.bpc != 0);
+          id(cam_wpc).publish_state(fd.wpc != 0);
+          id(cam_raw_gma).publish_state(fd.raw_gma != 0);
+          id(cam_lenc).publish_state(fd.lenc != 0);
+          id(cam_dcw).publish_state(fd.dcw != 0);
+          id(cam_colorbar).publish_state(false);
+          id(cam_resolution).publish_state(id(rtsp_camera).get_resolution_name(fd.framesize));
+
+psram:
+  mode: octal
+  speed: 80MHZ
+  
+external_components:
+  - source: components
+
+esp32:
+  variant: esp32
+  framework:
+    type: esp-idf
+    advanced: 
+      sram1_as_iram: true
+
+logger:
+
+api:
+  encryption:
+    key: "8Qqf7SXyEUFjNSs1cGfXt56YKulgGy+/i+i8Dq36qo4="
+  on_client_connected:
+    - lambda: |-
+        ESP_LOGI("camera_control", "Home Assistant connection established, syncing camera factory defaults to control panel...");
+        auto &fd = id(rtsp_camera).get_factory_defaults();
+        id(cam_brightness).publish_state(fd.brightness);
+        id(cam_contrast).publish_state(fd.contrast);
+        id(cam_saturation).publish_state(fd.saturation);
+        id(cam_ae_level).publish_state(fd.ae_level);
+        id(cam_aec_value).publish_state(fd.aec_value);
+        id(cam_agc_gain).publish_state(fd.agc_gain);
+
+        const char* fx_names[] = {"None", "Negative", "Grayscale", "Red Tint", "Green Tint", "Blue Tint", "Sepia"};
+        if (fd.special_effect >= 0 && fd.special_effect <= 6) {
+          id(cam_special_effect).publish_state(fx_names[fd.special_effect]);
+        }
+
+        const char* wb_names[] = {"Auto", "Sunny", "Cloudy", "Office", "Home"};
+        if (fd.wb_mode >= 0 && fd.wb_mode <= 4) {
+          id(cam_wb_mode).publish_state(wb_names[fd.wb_mode]);
+        }
+
+        const char* gc_names[] = {"2X", "4X", "8X", "16X", "32X", "64X", "128X"};
+        if (fd.gainceiling >= 0 && fd.gainceiling <= 6) {
+          id(cam_gainceiling).publish_state(gc_names[fd.gainceiling]);
+        }
+
+        id(cam_hmirror).publish_state(fd.hmirror != 0);
+        id(cam_vflip).publish_state(fd.vflip != 0);
+        id(cam_whitebal).publish_state(fd.whitebal != 0);
+        id(cam_awb_gain).publish_state(fd.awb_gain != 0);
+        id(cam_exposure_ctrl).publish_state(fd.exposure_ctrl != 0);
+        id(cam_aec2).publish_state(fd.aec2 != 0);
+        id(cam_gain_ctrl).publish_state(fd.gain_ctrl != 0);
+        id(cam_bpc).publish_state(fd.bpc != 0);
+        id(cam_wpc).publish_state(fd.wpc != 0);
+        id(cam_raw_gma).publish_state(fd.raw_gma != 0);
+        id(cam_lenc).publish_state(fd.lenc != 0);
+        id(cam_dcw).publish_state(fd.dcw != 0);
+        id(cam_colorbar).publish_state(false);
+        id(cam_resolution).publish_state(id(rtsp_camera).get_resolution_name(fd.framesize));
+
+ota:
+  - platform: esphome
+
+wifi:
+  networks: 
+  - ssid: !secret wifi_ssid
+    password: !secret wifi_password
+  manual_ip:
+    static_ip: 192.168.12.49
+    gateway: 192.168.12.254
+    subnet: 255.255.255.0
+  ap:
+    ssid: test-esp32-s3 Fallback Hotspot
+    password: "vb4yjLRL7Oe6"
+
+captive_portal:
+
+# RTSP Streaming Camera Core Configuration
+esp32cam_rtsp_server:
+  id: rtsp_camera
+  resolution: VGA
+
+# Onboard RGB LED Control
+# light:
+#   - platform: esp32_rmt_led_strip
+#     rgb_order: GRB
+#     pin: GPIO48
+#     num_leds: 1
+#     chipset: WS2812
+#     id: ledLight
+#     name: "LED Flashlight"
+#     on_turn_on:
+#       then:
+#         - delay: 10s
+#         - light.turn_off: ledLight
+
+# ==========================================
+# Home Assistant Adjustable Entities
+# ==========================================
+
+# Number Entities (Sliders)
+number:
+  - platform: template
+    name: "Brightness"
+    id: cam_brightness
+    icon: "mdi:brightness-6"
+    optimistic: true
+    min_value: -2
+    max_value: 2
+    step: 1
+    initial_value: 0
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_brightness(s, (int)x);
+          }
+
+  - platform: template
+    name: "Contrast"
+    id: cam_contrast
+    icon: "mdi:contrast-box"
+    optimistic: true
+    min_value: -2
+    max_value: 2
+    step: 1
+    initial_value: 0
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_contrast(s, (int)x);
+          }
+
+  - platform: template
+    name: "Saturation"
+    id: cam_saturation
+    icon: "mdi:palette-outline"
+    optimistic: true
+    min_value: -2
+    max_value: 2
+    step: 1
+    initial_value: 0
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_saturation(s, (int)x);
+          }
+
+  - platform: template
+    name: "AE Level"
+    id: cam_ae_level
+    icon: "mdi:weather-sunny-alert"
+    optimistic: true
+    min_value: -2
+    max_value: 2
+    step: 1
+    initial_value: 0
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_ae_level(s, (int)x);
+          }
+
+  - platform: template
+    name: "AEC Value"
+    id: cam_aec_value
+    icon: "mdi:camera-timer"
+    optimistic: true
+    min_value: 0
+    max_value: 1200
+    step: 10
+    initial_value: 300
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_aec_value(s, (int)x);
+          }
+
+  - platform: template
+    name: "AGC Gain"
+    id: cam_agc_gain
+    icon: "mdi:signal-variant"
+    optimistic: true
+    min_value: 0
+    max_value: 30
+    step: 1
+    initial_value: 6
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_agc_gain(s, (int)x);
+          }
+
+# Select Entities (Dropdowns)
+select:
+  - platform: template
+    name: "Resolution"
+    id: cam_resolution
+    icon: "mdi:aspect-ratio"
+    optimistic: true
+    initial_option: "VGA (640x480)"
+    options:
+      - "QQVGA (160x120)"
+      - "QCIF (176x144)"
+      - "HQVGA (240x176)"
+      - "240X240"
+      - "QVGA (320x240)"
+      - "CIF (400x296)"
+      - "HVGA (480x320)"
+      - "VGA (640x480)"
+      - "SVGA (800x600)"
+      - "XGA (1024x768)"
+      - "HD (1280x720)"
+      - "SXGA (1280x1024)"
+      - "UXGA (1600x1200)"
+    set_action:
+      - lambda: |-
+          framesize_t fs = FRAMESIZE_VGA;
+          if (x == "QQVGA (160x120)") fs = FRAMESIZE_QQVGA;
+          else if (x == "QCIF (176x144)") fs = FRAMESIZE_QCIF;
+          else if (x == "HQVGA (240x176)") fs = FRAMESIZE_HQVGA;
+          else if (x == "240X240") fs = FRAMESIZE_240X240;
+          else if (x == "QVGA (320x240)") fs = FRAMESIZE_QVGA;
+          else if (x == "CIF (400x296)") fs = FRAMESIZE_CIF;
+          else if (x == "HVGA (480x320)") fs = FRAMESIZE_HVGA;
+          else if (x == "VGA (640x480)") fs = FRAMESIZE_VGA;
+          else if (x == "SVGA (800x600)") fs = FRAMESIZE_SVGA;
+          else if (x == "XGA (1024x768)") fs = FRAMESIZE_XGA;
+          else if (x == "HD (1280x720)") fs = FRAMESIZE_HD;
+          else if (x == "SXGA (1280x1024)") fs = FRAMESIZE_SXGA;
+          else if (x == "UXGA (1600x1200)") fs = FRAMESIZE_UXGA;
+          id(rtsp_camera).set_dynamic_resolution(fs);
+
+  - platform: template
+    name: "Special Effect"
+    id: cam_special_effect
+    icon: "mdi:image-filter-vintage"
+    optimistic: true
+    initial_option: "None"
+    options:
+      - "None"
+      - "Negative"
+      - "Grayscale"
+      - "Red Tint"
+      - "Green Tint"
+      - "Blue Tint"
+      - "Sepia"
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            int effect = 0;
+            if (x == "Negative") effect = 1;
+            else if (x == "Grayscale") effect = 2;
+            else if (x == "Red Tint") effect = 3;
+            else if (x == "Green Tint") effect = 4;
+            else if (x == "Blue Tint") effect = 5;
+            else if (x == "Sepia") effect = 6;
+            s->set_special_effect(s, effect);
+          }
+
+  - platform: template
+    name: "White Balance Mode"
+    id: cam_wb_mode
+    icon: "mdi:white-balance-sunny"
+    optimistic: true
+    initial_option: "Auto"
+    options:
+      - "Auto"
+      - "Sunny"
+      - "Cloudy"
+      - "Office"
+      - "Home"
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            int mode = 0;
+            if (x == "Sunny") mode = 1;
+            else if (x == "Cloudy") mode = 2;
+            else if (x == "Office") mode = 3;
+            else if (x == "Home") mode = 4;
+            s->set_wb_mode(s, mode);
+          }
+
+  - platform: template
+    name: "Gain Ceiling"
+    id: cam_gainceiling
+    icon: "mdi:arrow-collapse-up"
+    optimistic: true
+    initial_option: "2X"
+    options:
+      - "2X"
+      - "4X"
+      - "8X"
+      - "16X"
+      - "32X"
+      - "64X"
+      - "128X"
+    set_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            gainceiling_t gc = GAINCEILING_2X;
+            if (x == "4X") gc = GAINCEILING_4X;
+            else if (x == "8X") gc = GAINCEILING_8X;
+            else if (x == "16X") gc = GAINCEILING_16X;
+            else if (x == "32X") gc = GAINCEILING_32X;
+            else if (x == "64X") gc = GAINCEILING_64X;
+            else if (x == "128X") gc = GAINCEILING_128X;
+            s->set_gainceiling(s, gc);
+          }
+
+# Switch Entities
+switch:
+  # Onboard LED Flashlight Control
+  # - platform: gpio
+  #   # Change to LED pin for your board
+  #   pin: GPIO4
+  #   id: ledPin
+  #   name: "LED Flashlight"
+  #   on_turn_on: 
+  #     then:
+  #       # Turn on LED for 10 seconds
+  #       - delay: 10s    
+  #       - switch.turn_off: ledPin
+  
+  - platform: template
+    name: "Horizontal Mirror"
+    id: cam_hmirror
+    icon: "mdi:flip-horizontal"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_hmirror(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_hmirror(s, 0);
+
+  - platform: template
+    name: "Vertical Flip"
+    id: cam_vflip
+    icon: "mdi:flip-vertical"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_vflip(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_vflip(s, 0);
+
+  - platform: template
+    name: "Auto White Balance"
+    id: cam_whitebal
+    icon: "mdi:auto-fix"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_whitebal(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_whitebal(s, 0);
+
+  - platform: template
+    name: "AWB Gain"
+    id: cam_awb_gain
+    icon: "mdi:tune-vertical"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_awb_gain(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_awb_gain(s, 0);
+
+  - platform: template
+    name: "Auto Exposure Control"
+    id: cam_exposure_ctrl
+    icon: "mdi:camera-iris"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_exposure_ctrl(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_exposure_ctrl(s, 0);
+
+  - platform: template
+    name: "Auto Exposure Control 2 (AEC2)"
+    id: cam_aec2
+    icon: "mdi:camera-metering-matrix"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_aec2(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_aec2(s, 0);
+
+  - platform: template
+    name: "Auto Gain Control"
+    id: cam_gain_ctrl
+    icon: "mdi:amplifier"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_gain_ctrl(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_gain_ctrl(s, 0);
+
+  - platform: template
+    name: "Black Pixel Correction (BPC)"
+    id: cam_bpc
+    icon: "mdi:checkerboard"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_bpc(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_bpc(s, 0);
+
+  - platform: template
+    name: "White Pixel Correction (WPC)"
+    id: cam_wpc
+    icon: "mdi:grain"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_wpc(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_wpc(s, 0);
+
+  - platform: template
+    name: "RAW Gamma (RAW GMA)"
+    id: cam_raw_gma
+    icon: "mdi:chart-bell-curve"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_raw_gma(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_raw_gma(s, 0);
+
+  - platform: template
+    name: "Lens Correction (LENC)"
+    id: cam_lenc
+    icon: "mdi:camera-metering-center"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_lenc(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_lenc(s, 0);
+
+  - platform: template
+    name: "Denoise and Edge Enhancement (DCW)"
+    id: cam_dcw
+    icon: "mdi:shimmer"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_dcw(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_dcw(s, 0);
+
+  - platform: template
+    name: "Color Bar Pattern"
+    id: cam_colorbar
+    icon: "mdi:view-column-outline"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_colorbar(s, 1);
+    turn_off_action:
+      - lambda: |-
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) s->set_colorbar(s, 0);
+
+
+# Button Entities (Supports camera software reset & ESP32 system reboot)
+button:
+  - platform: template
+    name: "Restart Camera"
+    id: restart_cam_button
+    icon: "mdi:camera-retake"
+    on_press:
+      - lambda: |-
+          ESP_LOGI("camera_control", "Restarting camera driver and sensor via button...");
+          id(rtsp_camera).reset_sensor();
+          // Re-apply current switch and slider settings
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_hmirror(s, id(cam_hmirror).state ? 1 : 0);
+            s->set_vflip(s, id(cam_vflip).state ? 1 : 0);
+            s->set_brightness(s, (int)id(cam_brightness).state);
+            s->set_contrast(s, (int)id(cam_contrast).state);
+            s->set_saturation(s, (int)id(cam_saturation).state);
+            s->set_ae_level(s, (int)id(cam_ae_level).state);
+            s->set_aec_value(s, (int)id(cam_aec_value).state);
+            s->set_agc_gain(s, (int)id(cam_agc_gain).state);
+            s->set_whitebal(s, id(cam_whitebal).state ? 1 : 0);
+            s->set_awb_gain(s, id(cam_awb_gain).state ? 1 : 0);
+            s->set_exposure_ctrl(s, id(cam_exposure_ctrl).state ? 1 : 0);
+            s->set_aec2(s, id(cam_aec2).state ? 1 : 0);
+            s->set_gain_ctrl(s, id(cam_gain_ctrl).state ? 1 : 0);
+            s->set_bpc(s, id(cam_bpc).state ? 1 : 0);
+            s->set_wpc(s, id(cam_wpc).state ? 1 : 0);
+            s->set_raw_gma(s, id(cam_raw_gma).state ? 1 : 0);
+            s->set_lenc(s, id(cam_lenc).state ? 1 : 0);
+            s->set_dcw(s, id(cam_dcw).state ? 1 : 0);
+            s->set_colorbar(s, id(cam_colorbar).state ? 1 : 0);
+          }
+          ESP_LOGI("camera_control", "Camera restart completed.");
+
+  - platform: template
+    name: "Cold Restart Camera"
+    id: cold_restart_cam_button
+    icon: "mdi:power-cycle"
+    on_press:
+      - lambda: |-
+          ESP_LOGI("camera_control", "Executing camera hardware cold restart (power down for 2 seconds before power on)...");
+          // Supports custom power down discharge duration (milliseconds), e.g. 2000 for 2 seconds
+          id(rtsp_camera).cold_restart(2000);
+          // Re-apply current control panel switch and slider settings
+          sensor_t *s = esp_camera_sensor_get();
+          if (s != nullptr) {
+            s->set_hmirror(s, id(cam_hmirror).state ? 1 : 0);
+            s->set_vflip(s, id(cam_vflip).state ? 1 : 0);
+            s->set_brightness(s, (int)id(cam_brightness).state);
+            s->set_contrast(s, (int)id(cam_contrast).state);
+            s->set_saturation(s, (int)id(cam_saturation).state);
+            s->set_ae_level(s, (int)id(cam_ae_level).state);
+            s->set_aec_value(s, (int)id(cam_aec_value).state);
+            s->set_agc_gain(s, (int)id(cam_agc_gain).state);
+            s->set_whitebal(s, id(cam_whitebal).state ? 1 : 0);
+            s->set_awb_gain(s, id(cam_awb_gain).state ? 1 : 0);
+            s->set_exposure_ctrl(s, id(cam_exposure_ctrl).state ? 1 : 0);
+            s->set_aec2(s, id(cam_aec2).state ? 1 : 0);
+            s->set_gain_ctrl(s, id(cam_gain_ctrl).state ? 1 : 0);
+            s->set_bpc(s, id(cam_bpc).state ? 1 : 0);
+            s->set_wpc(s, id(cam_wpc).state ? 1 : 0);
+            s->set_raw_gma(s, id(cam_raw_gma).state ? 1 : 0);
+            s->set_lenc(s, id(cam_lenc).state ? 1 : 0);
+            s->set_dcw(s, id(cam_dcw).state ? 1 : 0);
+            s->set_colorbar(s, id(cam_colorbar).state ? 1 : 0);
+          }
+          ESP_LOGI("camera_control", "Camera hardware cold restart completed.");
+
+  - platform: template
+    name: "Reset to Factory Defaults"
+    id: reset_factory_defaults_button
+    icon: "mdi:restore"
+    on_press:
+      - lambda: |-
+          ESP_LOGI("camera_control", "Restoring all camera settings to factory defaults (based on YAML and component configuration)...");
+          id(rtsp_camera).restore_factory_defaults();
+          // Dynamically read compiled factory default values and publish to control panel
+          auto &fd = id(rtsp_camera).get_factory_defaults();
+          id(cam_brightness).publish_state(fd.brightness);
+          id(cam_contrast).publish_state(fd.contrast);
+          id(cam_saturation).publish_state(fd.saturation);
+          id(cam_ae_level).publish_state(fd.ae_level);
+          id(cam_aec_value).publish_state(fd.aec_value);
+          id(cam_agc_gain).publish_state(fd.agc_gain);
+
+          const char* fx_names[] = {"None", "Negative", "Grayscale", "Red Tint", "Green Tint", "Blue Tint", "Sepia"};
+          if (fd.special_effect >= 0 && fd.special_effect <= 6) {
+            id(cam_special_effect).publish_state(fx_names[fd.special_effect]);
+          }
+
+          const char* wb_names[] = {"Auto", "Sunny", "Cloudy", "Office", "Home"};
+          if (fd.wb_mode >= 0 && fd.wb_mode <= 4) {
+            id(cam_wb_mode).publish_state(wb_names[fd.wb_mode]);
+          }
+
+          const char* gc_names[] = {"2X", "4X", "8X", "16X", "32X", "64X", "128X"};
+          if (fd.gainceiling >= 0 && fd.gainceiling <= 6) {
+            id(cam_gainceiling).publish_state(gc_names[fd.gainceiling]);
+          }
+
+          id(cam_hmirror).publish_state(fd.hmirror != 0);
+          id(cam_vflip).publish_state(fd.vflip != 0);
+          id(cam_whitebal).publish_state(fd.whitebal != 0);
+          id(cam_awb_gain).publish_state(fd.awb_gain != 0);
+          id(cam_exposure_ctrl).publish_state(fd.exposure_ctrl != 0);
+          id(cam_aec2).publish_state(fd.aec2 != 0);
+          id(cam_gain_ctrl).publish_state(fd.gain_ctrl != 0);
+          id(cam_bpc).publish_state(fd.bpc != 0);
+          id(cam_wpc).publish_state(fd.wpc != 0);
+          id(cam_raw_gma).publish_state(fd.raw_gma != 0);
+          id(cam_lenc).publish_state(fd.lenc != 0);
+          id(cam_dcw).publish_state(fd.dcw != 0);
+          id(cam_colorbar).publish_state(false);
+          id(cam_resolution).publish_state(id(rtsp_camera).get_resolution_name(fd.framesize));
+          ESP_LOGI("camera_control", "Factory default settings successfully restored.");
+
+  - platform: restart
+    name: "Restart Device"
+    id: restart_device_button
+    icon: "mdi:restart"

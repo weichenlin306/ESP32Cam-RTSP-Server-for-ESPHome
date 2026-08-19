@@ -1,0 +1,198 @@
+# ESP32Cam-RTSP-Server-for-ESPHome
+
+ ESP32Cam RTSP Server for ESPHome (revision for ESPHome 2025.7.0 and later)
+
+## Based on
+
+- Micro-RTSP: <https://github.com/geeksville/Micro-RTSP>
+- esp32cam-rtsp: <https://github.com/rzeldent/esp32cam-rtsp>
+
+## Features
+
+- Re-organizing ESPHome component structure to instantly switch between the Arduino and the ESP-IDF frameworks
+- Upgrading and optimizing the code to use both ESP-CAM and ESP-S3-CAM boards
+- Arduino framework and ESP-IDF framework are supported, respectively
+- The issues from the code using the ESP-IDF framework in Frigate have been solved.
+- Upgrades are assisted by the AI assistant, Antigravity
+- The original micro_rtsp is now a specialized submodule under each framework folder
+- Better video streaming with ESP-IDF framework on an ESP32-S3-CAM board
+
+## Folder structure
+
+```
+  esphome ── components ├── arduino ├── esp32cam_rtsp_server
+                        │           └── micro_rtsp
+                        └── esp-idf ├── esp32cam_rtsp_server
+                                    └── micro_rtsp
+```
+
+## Usage
+
+- Put all "components" subfolders into the "esphome/components" folder
+- Use esp32cam-rtsp-server as an external component of ESPHome
+- Configure your YAML project file
+
+  - PSRAM is automatically loaded for ESP32-CAM. Manual addition should be done for ESP32-S3-CAM.
+  - Configure your YAML file as follows:
+
+        substitutions:
+          # Available frameworks: arduino, esp-idf
+          framework: esp-idf
+        
+        esphome:
+          # Change to your preferred camera name
+          name: test-cam    
+          friendly_name: test-cam
+          includes: components/${framework}/micro_rtsp
+
+        external_components:
+          - source: components/${framework}/
+
+        # These PSRAM settings are only required for the ESP32-S3-CAM board
+        psram:
+          mode: octal
+          speed: 80MHZ
+
+        esp32:
+          # Available boards: ESP32, ESP32S3
+          variant: ESP32S3
+          framework:
+            type: ${framework} 
+            # Uncomment advanced parameters if ESP_LOG displays warning messages  
+            # advanced:
+            #   minimum_chip_revision: "3.1"
+            #   sram1_as_iram: true
+
+        # Enable logging
+        logger:
+
+        # Enable Home Assistant API
+        api:
+          encryption:
+            # Change to your preferred key
+            key: "9dk/J/MEmJycgU0ZfO2ZkvSoalMQVYzmjT4WKAor8L8=" 
+
+        ota:
+          - platform: esphome
+            # Change to your preferred password
+            password: "2a96d7ecbd32092ef6a7a8c78ccd9cc2" 
+
+        wifi:
+          # Use multiple networks for redundancy
+          networks:
+            - ssid: "your_ssid_1"
+              password: "your_password_1"
+            - ssid: "your_ssid_2"
+              password: "your_password_2"
+
+          # Optional: Set a static IP address
+          manual_ip:
+            # Change to your preferred IP address, gateway, subnet, and DNS server
+            static_ip: 192.168.1.100
+            gateway: 192.168.1.254
+            subnet: 255.255.255.0
+            dns1: 192.168.1.254
+
+          # Enable fallback hotspot (captive portal) in case wifi connection fails
+          ap:
+            ssid: "Test-Cam Fallback Hotspot"
+            password: "oAcws4IqWTxf"
+
+        captive_portal:
+
+        esp32cam_rtsp_server:
+          # Optional, default value is esp32cam_aithinker for ESP32-CAM, esp32cam_S3_eye for ESP32-S3-CAM
+          # Available camera types: esp32cam_config, esp32cam_aithinker, esp32cam_s3_eye, esp32cam_ttgo_t*
+          camera: esp32cam_aithinker
+          # Optional, default value is 20000000 (20MHz)
+          # Available values: 10000000 - 20000000
+          external_clock_frequency: 20000000
+          # Optional, default value is 5 fps
+          # Available values: 1 - 60
+          max_framerate: 5 fps
+          # Optional, default value is 554
+          port: 554
+          # Required, available values: UXGA(1600x1200), SXGA(1280x1024), XGA(1024x768), SVGA(800x600), VGA(640x480), CIF(400x296), QVGA(320x240), HQVGA(240x176), QQVGA(160x120)
+          resolution: XGA
+          # Optional, default value is 0
+          # Available values: -2 - 2
+          brightness: 0
+          # Optional, default value is 0
+          # Available values: -2 - 2
+          contrast: 0
+          # Optional, default value is 0
+          # Available values: -2 - 2
+          saturation: 0
+          # Optional, default value is none
+          # Available values: none, negative, grayscale, red_tint, green_tint, blue_tint, sepia
+          special_effect: none
+          # Optional, default value is true
+          white_balance: true
+          # Optional, default value is true
+          awb_gain: true
+          # Optional, default value is auto
+          # Available values: auto, sunny, cloudy, office, home
+          wb_mode: auto
+          # Optional, default value is true
+          exposure_control: true
+          # Optional, default value is true
+          aec2: true
+          # Optional, default value is 0
+          # Available values: -2 - 2
+          ae_level: 0
+          # Optional, default value is 300
+          # Available values: 0 - 1200
+          aec_value: 300
+          # Optional, default value is false
+          gain_control: false
+          # Optional, default value is 6
+          # Available values: 0 - 30
+          agc_gain: 6
+          # Optional, default value is 2x
+          # Available values: 2x, 4x, 8x, 16x, 32x, 64x, 128x
+          gain_ceiling: 2x
+          # Optional, default value is false
+          bpc: false
+          # Optional, default value is true
+          wpc: true
+          # Optional, default value is true
+          raw_gma: true
+          # Optional, default value is false
+          horizontal_mirror: false
+          # Optional, default value is false
+          vertical_flip: false 
+          # Optional, default value is true
+          lenc: true
+          # Optional, default value is true
+          dcw: true
+        
+        # Optional: LED Light switch
+        switch:
+        - platform: gpio
+          # Change to LED pin for your board
+          pin: GPIO4
+          id: ledPin
+          name: "LED Light"
+          on_turn_on: 
+            then:
+              # Turn on LED for 10 seconds
+              - delay: 10s    
+              - switch.turn_off: ledPin
+
+    \* TTGO T-Camera board is UNTESTED. Use at your own risk.
+
+
+    Please refer to https://randomnerdtutorials.com/esp32-cam-ov2640-camera-settings/ for more settings.
+
+- Use VLC to open stream "rtsp://YOUR_RTSP_SERVER_IP:PORT/mjpeg/1" to test RTSP server function
+
+## References
+
+- Micro-RTSP: <https://github.com/geeksville/Micro-RTSP>
+- esp32cam-rtsp: <https://github.com/rzeldent/esp32cam-rtsp>
+- 夜巿小霸王 <https://youyouyou.pixnet.net/blog/post/120778494>
+- Micro-RTSP代碼解析
+  - <https://blog.csdn.net/katerdaisy/article/details/128318785>
+  - <https://blog.csdn.net/katerdaisy/article/details/128345987>
+  - <https://blog.csdn.net/katerdaisy/article/details/128483624>
+- Lewis Van Winkle (2019) Hands-On Network Programming with C.
