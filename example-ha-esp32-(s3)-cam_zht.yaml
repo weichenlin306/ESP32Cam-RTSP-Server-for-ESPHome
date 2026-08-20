@@ -135,7 +135,7 @@ esp32cam_rtsp_server:
 # 板載 RGB LED 燈控制
 # light:
 #   - platform: esp32_rmt_led_strip
-#     rgb_order: GRB
+#     channel_colors: GRB
 #     pin: GPIO48
 #     num_leds: 1
 #     chipset: WS2812
